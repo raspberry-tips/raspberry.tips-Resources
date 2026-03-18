@@ -1,0 +1,21 @@
+# systemd Service Template für einen Netzwerkdienst
+# Tutorial: https://raspberry.tips/raspberrypi-einsteiger/raspberry-pi-autostart-von-skripten-und-programmen-einrichten
+# Speichern unter: /etc/systemd/system/mein-dienst.service
+
+[Unit]
+Description=Mein Netzwerkdienst
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+ExecStart=/usr/local/bin/mein-dienst
+Restart=always
+RestartSec=10s
+# Neustart bei zu vielen Abstürzen verhindern:
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Install]
+WantedBy=multi-user.target
