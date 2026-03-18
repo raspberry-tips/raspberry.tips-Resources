@@ -1,0 +1,12 @@
+# Crontab Beispiele für automatische Raspberry Pi Backups
+# Bearbeiten mit: sudo crontab -e
+# Tutorial: https://raspberry.tips/raspberrypi-tutorials/raspberry-pi-datensicherung-erstellen
+
+# Täglich um 3:00 Uhr rsync Backup
+0 3 * * * /home/pi/backup/rsync-backup.sh
+
+# Wöchentlich sonntags um 2:00 Uhr
+0 2 * * 0 /home/pi/backup/rsync-backup.sh
+
+# DuckDNS IP alle 5 Minuten aktualisieren (für WireGuard VPN)
+# */5 * * * * ~/duckdns/duck.sh >/dev/null 2>&1
