@@ -1,0 +1,21 @@
+# systemd Service Template für ein Python-Skript
+# Tutorial: https://raspberry.tips/raspberrypi-einsteiger/raspberry-pi-autostart-von-skripten-und-programmen-einrichten
+# Speichern unter: /etc/systemd/system/meinskript.service
+
+[Unit]
+Description=Mein Python Skript
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi
+ExecStart=/usr/bin/python3 /home/pi/meinskript.py
+Restart=on-failure
+RestartSec=5s
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
