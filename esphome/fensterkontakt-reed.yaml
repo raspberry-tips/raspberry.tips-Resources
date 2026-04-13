@@ -1,0 +1,12 @@
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO4
+      mode:
+        input: true
+        pullup: true
+    name: "Küchenfenster"
+    device_class: window
+    filters:
+      - delayed_on: 10ms
+      - delayed_off: 10ms
