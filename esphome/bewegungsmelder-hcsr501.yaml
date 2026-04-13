@@ -1,0 +1,7 @@
+binary_sensor:
+  - platform: gpio
+    pin: GPIO16
+    name: "Flur Bewegung"
+    device_class: motion
+    filters:
+      - delayed_off: 30s
