@@ -12,6 +12,7 @@ als Ergänzung zu den Tutorials auf **[raspberry.tips](https://raspberry.tips)**
 | `backup/` | Backup-Scripts mit rpi-clone und shrink-backup | [→ Tutorial](https://raspberry.tips/raspberrypi-tutorials/raspberry-pi-datensicherung-erstellen) |
 | `autostart/` | systemd Service-Templates für den Raspberry Pi Autostart | [→ Tutorial](https://raspberry.tips/raspberrypi-einsteiger/raspberry-pi-autostart-von-skripten-und-programmen-einrichten) |
 | `pihole/` | Pi-hole Konfiguration und Blocklisten | [→ Tutorial](https://raspberry.tips/raspberrypi-tutorials/pi-hole-einrichten-netzwerkweiter-werbeblocker) |
+| `shelly-wall-display/` | Home-Assistant-Dashboard-YAML (Kiosk Mode, Browser-Mod-Popups) fürs Shelly Wall Display X2i | [→ Tutorial](https://raspberry.tips/smart-home/shelly-wall-display-home-assistant-dashboard-einbinden) |
 
 ## Verwendung
 
