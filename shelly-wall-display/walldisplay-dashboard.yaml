@@ -1,0 +1,382 @@
+kiosk_mode:
+  user_settings:
+    - users:
+        - walldisplay
+      kiosk: true
+views:
+  - type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: tile
+            entity: switch.esszimmer_walldisplay_esszimmer_licht
+            name: Esszimmer Lich
+            icon: mdi:ceiling-light-multiple
+            vertical: false
+            tap_action:
+              action: toggle
+            icon_tap_action:
+              action: toggle
+            features:
+              - type: toggle
+            features_position: bottom
+          - type: tile
+            entity: switch.wohnzimmer_licht
+            icon: mdi:globe-light
+            vertical: false
+            tap_action:
+              action: toggle
+            icon_tap_action:
+              action: toggle
+            features:
+              - type: toggle
+            features_position: bottom
+          - type: tile
+            entity: switch.kuche_licht_kuche_lich
+            name: Küche Licht
+            icon: mdi:lightbulb
+            vertical: false
+            tap_action:
+              action: toggle
+            icon_tap_action:
+              action: toggle
+            features:
+              - type: toggle
+            features_position: bottom
+          - type: tile
+            entity: switch.terrasse_licht
+            icon: mdi:car-light-high
+            vertical: false
+            tap_action:
+              action: toggle
+            icon_tap_action:
+              action: toggle
+            features:
+              - type: toggle
+            features_position: bottom
+          - type: tile
+            entity: cover.wohnzimmer_fenster_rollladen
+            features:
+              - type: cover-open-close
+            tap_action:
+              action: perform-action
+              perform_action: browser_mod.popup
+              target: {}
+              data:
+                title: Wohnzimmer Fenster Rollladen
+                content:
+                  type: vertical-stack
+                  cards:
+                    - type: button
+                      name: Auf
+                      icon: mdi:arrow-up-bold
+                      icon_height: 48px
+                      tap_action:
+                        action: perform-action
+                        perform_action: cover.open_cover
+                        target:
+                          entity_id: cover.wohnzimmer_fenster_rollladen
+                    - type: button
+                      name: Stopp
+                      icon: mdi:stop
+                      icon_height: 48px
+                      tap_action:
+                        action: perform-action
+                        perform_action: cover.stop_cover
+                        target:
+                          entity_id: cover.wohnzimmer_fenster_rollladen
+                    - type: button
+                      name: Zu
+                      icon: mdi:arrow-down-bold
+                      icon_height: 48px
+                      tap_action:
+                        action: perform-action
+                        perform_action: cover.close_cover
+                        target:
+                          entity_id: cover.wohnzimmer_fenster_rollladen
+            icon_tap_action:
+              action: perform-action
+              perform_action: browser_mod.popup
+              target: {}
+              data:
+                title: Wohnzimmer Fenster Rollladen
+                content:
+                  type: vertical-stack
+                  cards:
+                    - type: button
+                      name: Auf
+                      icon: mdi:arrow-up-bold
+                      icon_height: 48px
+                      tap_action:
+                        action: perform-action
+                        perform_action: cover.open_cover
+                        target:
+                          entity_id: cover.wohnzimmer_fenster_rollladen
+                    - type: button
+                      name: Stopp
+                      icon: mdi:stop
+                      icon_height: 48px
+                      tap_action:
+                        action: perform-action
+                        perform_action: cover.stop_cover
+                        target:
+                          entity_id: cover.wohnzimmer_fenster_rollladen
+                    - type: button
+                      name: Zu
+                      icon: mdi:arrow-down-bold
+                      icon_height: 48px
+                      tap_action:
+                        action: perform-action
+                        perform_action: cover.close_cover
+                        target:
+                          entity_id: cover.wohnzimmer_fenster_rollladen
+          - type: tile
+            entity: cover.wohnzimmer_ture_rollladen
+            features:
+              - type: cover-open-close
+            tap_action:
+              action: perform-action
+              perform_action: browser_mod.popup
+              target: {}
+              data:
+                title: Wohnzimmer Türe Rollladen
+                content:
+                  type: vertical-stack
+                  cards:
+                    - type: button
+                      name: Auf
+                      icon: mdi:arrow-up-bold
+                      icon_height: 48px
+                      tap_action:
+                        action: perform-action
+                        perform_action: cover.open_cover
+                        target:
+                          entity_id: cover.wohnzimmer_ture_rollladen
+                    - type: button
+                      name: Stopp
+                      icon: mdi:stop
+                      icon_height: 48px
+                      tap_action:
+                        action: perform-action
+                        perform_action: cover.stop_cover
+                        target:
+                          entity_id: cover.wohnzimmer_ture_rollladen
+                    - type: button
+                      name: Zu
+                      icon: mdi:arrow-down-bold
+                      icon_height: 48px
+                      tap_action:
+                        action: perform-action
+                        perform_action: cover.close_cover
+                        target:
+                          entity_id: cover.wohnzimmer_ture_rollladen
+            icon_tap_action:
+              action: perform-action
+              perform_action: browser_mod.popup
+              target: {}
+              data:
+                title: Wohnzimmer Türe Rollladen
+                content:
+                  type: vertical-stack
+                  cards:
+                    - type: button
+                      name: Auf
+                      icon: mdi:arrow-up-bold
+                      icon_height: 48px
+                      tap_action:
+                        action: perform-action
+                        perform_action: cover.open_cover
+                        target:
+                          entity_id: cover.wohnzimmer_ture_rollladen
+                    - type: button
+                      name: Stopp
+                      icon: mdi:stop
+                      icon_height: 48px
+                      tap_action:
+                        action: perform-action
+                        perform_action: cover.stop_cover
+                        target:
+                          entity_id: cover.wohnzimmer_ture_rollladen
+                    - type: button
+                      name: Zu
+                      icon: mdi:arrow-down-bold
+                      icon_height: 48px
+                      tap_action:
+                        action: perform-action
+                        perform_action: cover.close_cover
+                        target:
+                          entity_id: cover.wohnzimmer_ture_rollladen
+          - type: tile
+            entity: cover.bad_rollladen
+            features:
+              - type: cover-open-close
+            tap_action:
+              action: perform-action
+              perform_action: browser_mod.popup
+              target: {}
+              data:
+                title: Bad Rollladen
+                content:
+                  type: vertical-stack
+                  cards:
+                    - type: button
+                      name: Auf
+                      icon: mdi:arrow-up-bold
+                      icon_height: 48px
+                      tap_action:
+                        action: perform-action
+                        perform_action: cover.open_cover
+                        target:
+                          entity_id: cover.bad_rollladen
+                    - type: button
+                      name: Stopp
+                      icon: mdi:stop
+                      icon_height: 48px
+                      tap_action:
+                        action: perform-action
+                        perform_action: cover.stop_cover
+                        target:
+                          entity_id: cover.bad_rollladen
+                    - type: button
+                      name: Zu
+                      icon: mdi:arrow-down-bold
+                      icon_height: 48px
+                      tap_action:
+                        action: perform-action
+                        perform_action: cover.close_cover
+                        target:
+                          entity_id: cover.bad_rollladen
+            icon_tap_action:
+              action: perform-action
+              perform_action: browser_mod.popup
+              target: {}
+              data:
+                title: Bad Rollladen
+                content:
+                  type: vertical-stack
+                  cards:
+                    - type: button
+                      name: Auf
+                      icon: mdi:arrow-up-bold
+                      icon_height: 48px
+                      tap_action:
+                        action: perform-action
+                        perform_action: cover.open_cover
+                        target:
+                          entity_id: cover.bad_rollladen
+                    - type: button
+                      name: Stopp
+                      icon: mdi:stop
+                      icon_height: 48px
+                      tap_action:
+                        action: perform-action
+                        perform_action: cover.stop_cover
+                        target:
+                          entity_id: cover.bad_rollladen
+                    - type: button
+                      name: Zu
+                      icon: mdi:arrow-down-bold
+                      icon_height: 48px
+                      tap_action:
+                        action: perform-action
+                        perform_action: cover.close_cover
+                        target:
+                          entity_id: cover.bad_rollladen
+          - type: tile
+            entity: cover.alle_rollladen
+            features:
+              - type: cover-open-close
+            tap_action:
+              action: perform-action
+              perform_action: browser_mod.popup
+              target: {}
+              data:
+                title: Alle Rollläden
+                content:
+                  type: vertical-stack
+                  cards:
+                    - type: button
+                      name: Auf
+                      icon: mdi:arrow-up-bold
+                      icon_height: 48px
+                      tap_action:
+                        action: perform-action
+                        perform_action: cover.open_cover
+                        target:
+                          entity_id: cover.alle_rollladen
+                    - type: button
+                      name: Stopp
+                      icon: mdi:stop
+                      icon_height: 48px
+                      tap_action:
+                        action: perform-action
+                        perform_action: cover.stop_cover
+                        target:
+                          entity_id: cover.alle_rollladen
+                    - type: button
+                      name: Zu
+                      icon: mdi:arrow-down-bold
+                      icon_height: 48px
+                      tap_action:
+                        action: perform-action
+                        perform_action: cover.close_cover
+                        target:
+                          entity_id: cover.alle_rollladen
+            icon_tap_action:
+              action: perform-action
+              perform_action: browser_mod.popup
+              target: {}
+              data:
+                title: Alle Rollläden
+                content:
+                  type: vertical-stack
+                  cards:
+                    - type: button
+                      name: Auf
+                      icon: mdi:arrow-up-bold
+                      icon_height: 48px
+                      tap_action:
+                        action: perform-action
+                        perform_action: cover.open_cover
+                        target:
+                          entity_id: cover.alle_rollladen
+                    - type: button
+                      name: Stopp
+                      icon: mdi:stop
+                      icon_height: 48px
+                      tap_action:
+                        action: perform-action
+                        perform_action: cover.stop_cover
+                        target:
+                          entity_id: cover.alle_rollladen
+                    - type: button
+                      name: Zu
+                      icon: mdi:arrow-down-bold
+                      icon_height: 48px
+                      tap_action:
+                        action: perform-action
+                        perform_action: cover.close_cover
+                        target:
+                          entity_id: cover.alle_rollladen
+          - type: tile
+            entity: climate.roomlivingroom_wohnzimmer_fenster_heizung
+            features:
+              - type: target-temperature
+          - type: tile
+            entity: climate.roomlivingroom_wohnzimmer_schiebeture_heizung
+            features:
+              - type: target-temperature
+          - type: tile
+            entity: climate.bad_heizung
+            features:
+              - type: target-temperature
+          - type: tile
+            entity: climate.flur_heizung
+            features:
+              - type: target-temperature
+        column_span: 2
+        theme: ios-dark-mode-light-blue
+    header:
+      layout: responsive
+      badges_position: top
+      badges_wrap: wrap
