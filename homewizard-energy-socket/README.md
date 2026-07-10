@@ -1,6 +1,6 @@
 # HomeWizard Energy Socket – Verbrauchslogger
 
-Begleit-Script zum Artikel **HomeWizard Energy Socket im Test – WLAN-Steckdose mit Home Assistant einbinden** auf [raspberry.tips](https://raspberry.tips).
+Begleit-Script zum Artikel **[HomeWizard Energy Socket im Test – WLAN-Steckdose mit Home Assistant einbinden](https://raspberry.tips/smart-home/homewizard-energy-socket-home-assistant)** auf raspberry.tips.
 
 `energy_logger.py` fragt die [lokale API v1](https://api-documentation.homewizard.com/docs/category/api-v1) der Energy Socket im Sekundentakt ab und schreibt Leistung (W) und Zählerstand (kWh) mit Zeitstempel in eine CSV-Datei – z. B. um den Anlaufstrom der Waschmaschine oder ein Lastprofil über den Tag aufzuzeichnen. Alles läuft komplett lokal, ganz ohne Cloud.
 
