@@ -1,0 +1,128 @@
+# =====================================================================
+# Airthings Luftqualitaets-Profile fuer Home Assistant
+# raspberry.tips — funktioniert mit jedem Luftqualitaets-Sensor,
+# einfach die Entity-IDs unten anpassen.
+#
+# Einbindung als Package in configuration.yaml:
+#   homeassistant:
+#     packages: !include_dir_named packages
+# Datei ablegen als: config/packages/airthings_luftprofile.yaml
+#
+# WICHTIG: Entity-IDs anpassen! (Entwicklerwerkzeuge -> Zustaende)
+# Im Beispiel heisst das Geraet "Wohnzimmer View Plus".
+# =====================================================================
+
+# Luftdruck-Trend: Aenderung in hPa pro Stunde (3h-Fenster).
+# Schnelle Druckaenderungen (Wetterumschwung) sind ein bekannter
+# Kopfschmerz-Trigger.
+sensor:
+  - platform: derivative
+    source: sensor.wohnzimmer_view_plus_atmospharischer_druck
+    name: "Luftdruck Trend"
+    unique_id: luftdruck_trend_3h
+    unit_time: h
+    time_window: "03:00:00"
+    round: 2
+
+template:
+  - sensor:
+      # ---------------------------------------------------------------
+      # Profil: Kopfschmerzen  (CO2, VOC, Luftfeuchte, Luftdruck-Trend)
+      # ---------------------------------------------------------------
+      - name: "Luftprofil Kopfschmerzen"
+        unique_id: luftprofil_kopfschmerzen
+        icon: mdi:head-flash-outline
+        state: >-
+          {% set co2 = states('sensor.wohnzimmer_view_plus_kohlendioxid') | float(0) %}
+          {% set voc = states('sensor.wohnzimmer_view_plus_voc_teile') | float(0) %}
+          {% set hum = states('sensor.wohnzimmer_view_plus_luftfeuchtigkeit') | float(50) %}
+          {% set trend = states('sensor.luftdruck_trend') | float(0) | abs %}
+          {% set rot = (co2 >= 1000) or (voc >= 2000) or (hum < 25) or (hum >= 70) or (trend >= 2.5) %}
+          {% set gelb = (co2 >= 800) or (voc >= 250) or (hum < 30) or (hum >= 60) or (trend >= 1.5) %}
+          {{ 'Schlecht' if rot else ('Eingeschränkt' if gelb else 'Gut') }}
+        attributes:
+          probleme: >-
+            {% set co2 = states('sensor.wohnzimmer_view_plus_kohlendioxid') | float(0) %}
+            {% set voc = states('sensor.wohnzimmer_view_plus_voc_teile') | float(0) %}
+            {% set hum = states('sensor.wohnzimmer_view_plus_luftfeuchtigkeit') | float(50) %}
+            {% set trend = states('sensor.luftdruck_trend') | float(0) | abs %}
+            {% set p = [] %}
+            {% if co2 >= 800 %}{% set p = p + ['CO2 ' ~ co2 | round(0) ~ ' ppm → lüften'] %}{% endif %}
+            {% if voc >= 250 %}{% set p = p + ['VOC ' ~ voc | round(0) ~ ' ppb → Quelle prüfen, lüften'] %}{% endif %}
+            {% if hum < 30 or hum >= 60 %}{% set p = p + ['Luftfeuchte ' ~ hum | round(0) ~ ' %'] %}{% endif %}
+            {% if trend >= 1.5 %}{% set p = p + ['Schneller Luftdruck-Wechsel (' ~ trend ~ ' hPa/h)'] %}{% endif %}
+            {{ p | join(' · ') if p else 'Alle Werte im grünen Bereich' }}
+
+      # ---------------------------------------------------------------
+      # Profil: Schlaf  (CO2, Temperatur, Luftfeuchte)
+      # ---------------------------------------------------------------
+      - name: "Luftprofil Schlaf"
+        unique_id: luftprofil_schlaf
+        icon: mdi:sleep
+        state: >-
+          {% set co2 = states('sensor.wohnzimmer_view_plus_kohlendioxid') | float(0) %}
+          {% set temp = states('sensor.wohnzimmer_view_plus_temperatur') | float(21) %}
+          {% set hum = states('sensor.wohnzimmer_view_plus_luftfeuchtigkeit') | float(50) %}
+          {% set rot = (co2 >= 1000) or (temp < 16) or (temp > 26) or (hum < 25) or (hum >= 70) %}
+          {% set gelb = (co2 >= 800) or (temp < 18) or (temp > 24) or (hum < 30) or (hum >= 60) %}
+          {{ 'Schlecht' if rot else ('Eingeschränkt' if gelb else 'Gut') }}
+        attributes:
+          probleme: >-
+            {% set co2 = states('sensor.wohnzimmer_view_plus_kohlendioxid') | float(0) %}
+            {% set temp = states('sensor.wohnzimmer_view_plus_temperatur') | float(21) %}
+            {% set hum = states('sensor.wohnzimmer_view_plus_luftfeuchtigkeit') | float(50) %}
+            {% set p = [] %}
+            {% if co2 >= 800 %}{% set p = p + ['CO2 ' ~ co2 | round(0) ~ ' ppm → vor dem Schlafen lüften'] %}{% endif %}
+            {% if temp < 18 or temp > 24 %}{% set p = p + ['Temperatur ' ~ temp ~ ' °C (ideal 16–19 °C im Schlafzimmer)'] %}{% endif %}
+            {% if hum < 30 or hum >= 60 %}{% set p = p + ['Luftfeuchte ' ~ hum | round(0) ~ ' %'] %}{% endif %}
+            {{ p | join(' · ') if p else 'Alle Werte im grünen Bereich' }}
+
+      # ---------------------------------------------------------------
+      # Profil: Produktivitaet  (CO2, Temperatur, VOC)
+      # ---------------------------------------------------------------
+      # Hinweis: HA erzeugt daraus die Entity-ID sensor.luftprofil_produktivitat
+      # (Umlaute werden zu a/o/u verkuerzt)
+      - name: "Luftprofil Produktivität"
+        unique_id: luftprofil_produktivitaet
+        icon: mdi:lightbulb-on-outline
+        state: >-
+          {% set co2 = states('sensor.wohnzimmer_view_plus_kohlendioxid') | float(0) %}
+          {% set temp = states('sensor.wohnzimmer_view_plus_temperatur') | float(21) %}
+          {% set voc = states('sensor.wohnzimmer_view_plus_voc_teile') | float(0) %}
+          {% set rot = (co2 >= 1000) or (temp < 18) or (temp > 26) or (voc >= 2000) %}
+          {% set gelb = (co2 >= 800) or (temp < 20) or (temp > 25) or (voc >= 250) %}
+          {{ 'Schlecht' if rot else ('Eingeschränkt' if gelb else 'Gut') }}
+        attributes:
+          probleme: >-
+            {% set co2 = states('sensor.wohnzimmer_view_plus_kohlendioxid') | float(0) %}
+            {% set temp = states('sensor.wohnzimmer_view_plus_temperatur') | float(21) %}
+            {% set voc = states('sensor.wohnzimmer_view_plus_voc_teile') | float(0) %}
+            {% set p = [] %}
+            {% if co2 >= 800 %}{% set p = p + ['CO2 ' ~ co2 | round(0) ~ ' ppm → Konzentration leidet, lüften'] %}{% endif %}
+            {% if temp < 20 or temp > 25 %}{% set p = p + ['Temperatur ' ~ temp ~ ' °C'] %}{% endif %}
+            {% if voc >= 250 %}{% set p = p + ['VOC ' ~ voc | round(0) ~ ' ppb'] %}{% endif %}
+            {{ p | join(' · ') if p else 'Alle Werte im grünen Bereich' }}
+
+      # ---------------------------------------------------------------
+      # Profil: Allergie & Feinstaub  (PM1, PM2.5, Luftfeuchte)
+      # ---------------------------------------------------------------
+      - name: "Luftprofil Allergie"
+        unique_id: luftprofil_allergie
+        icon: mdi:flower-pollen-outline
+        state: >-
+          {% set pm1 = states('sensor.wohnzimmer_view_plus_pm1') | float(0) %}
+          {% set pm25 = states('sensor.wohnzimmer_view_plus_pm25') | float(0) %}
+          {% set hum = states('sensor.wohnzimmer_view_plus_luftfeuchtigkeit') | float(50) %}
+          {% set rot = (pm25 >= 25) or (pm1 >= 25) or (hum >= 70) %}
+          {% set gelb = (pm25 >= 10) or (pm1 >= 10) or (hum >= 60) or (hum < 30) %}
+          {{ 'Schlecht' if rot else ('Eingeschränkt' if gelb else 'Gut') }}
+        attributes:
+          probleme: >-
+            {% set pm1 = states('sensor.wohnzimmer_view_plus_pm1') | float(0) %}
+            {% set pm25 = states('sensor.wohnzimmer_view_plus_pm25') | float(0) %}
+            {% set hum = states('sensor.wohnzimmer_view_plus_luftfeuchtigkeit') | float(50) %}
+            {% set p = [] %}
+            {% if pm25 >= 10 or pm1 >= 10 %}{% set p = p + ['Feinstaub PM2.5 ' ~ pm25 | round(0) ~ ' / PM1 ' ~ pm1 | round(0) ~ ' µg/m³ → Quelle prüfen (Kochen, Kerzen), Luftreiniger'] %}{% endif %}
+            {% if hum >= 60 %}{% set p = p + ['Luftfeuchte ' ~ hum | round(0) ~ ' % → Schimmel-/Milbenrisiko steigt'] %}{% endif %}
+            {% if hum < 30 %}{% set p = p + ['Luftfeuchte ' ~ hum | round(0) ~ ' % → reizt Atemwege'] %}{% endif %}
+            {{ p | join(' · ') if p else 'Alle Werte im grünen Bereich' }}
