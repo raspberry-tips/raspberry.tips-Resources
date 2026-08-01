@@ -1,0 +1,160 @@
+# =====================================================================
+# Air-Quality-Dashboard fuer Home Assistant (Airthings View Plus)
+# raspberry.tips — Ampel-Schwellwerte = offizielle Airthings-Grenzen
+#
+# Einbindung: Einstellungen -> Dashboards -> Neues Dashboard ->
+# (drei Punkte) -> Roh-Konfigurationseditor -> Inhalt einfuegen.
+# Oder als einzelne Ansicht in ein bestehendes Dashboard kopieren
+# (nur den Block unter "views:" ab "- title:").
+#
+# Entity-IDs anpassen (Beispiel-Geraet: "Wohnzimmer View Plus")!
+# =====================================================================
+views:
+  - title: Luftqualität
+    path: luftqualitaet
+    type: sections
+    max_columns: 3
+    sections:
+
+      # ------------------ Empfehlungsprofile ------------------
+      - type: grid
+        cards:
+          - type: heading
+            heading: Empfehlungsprofile
+            heading_style: title
+            icon: mdi:account-heart-outline
+          - type: markdown
+            content: >-
+              {# Achtung: HA macht aus Umlauten im Namen a/o/u -> "Produktivität" wird zu _produktivitat #}
+              {% for e in ['sensor.luftprofil_kopfschmerzen',
+                           'sensor.luftprofil_schlaf',
+                           'sensor.luftprofil_produktivitat',
+                           'sensor.luftprofil_allergie'] %}
+              {% set s = states(e) %}
+              {% set icon = '🟢' if s == 'Gut' else ('🟡' if s == 'Eingeschränkt' else '🔴') %}
+              **{{ icon }} {{ state_attr(e, 'friendly_name') | replace('Luftprofil ', '') }}: {{ s }}**{{ '  ' }}
+              {{ state_attr(e, 'probleme') }}
+
+              {% endfor %}
+
+      # ------------------ Ampel-Gauges ------------------
+      - type: grid
+        cards:
+          - type: heading
+            heading: Messwerte
+            heading_style: title
+            icon: mdi:air-filter
+          - type: gauge
+            entity: sensor.wohnzimmer_view_plus_kohlendioxid
+            name: CO2
+            unit: ppm
+            min: 400
+            max: 2000
+            needle: true
+            segments:
+              - from: 400
+                color: "#43a047"
+              - from: 800
+                color: "#fdd835"
+              - from: 1000
+                color: "#e53935"
+          - type: gauge
+            entity: sensor.wohnzimmer_view_plus_pm25
+            name: Feinstaub PM2.5
+            unit: µg/m³
+            min: 0
+            max: 50
+            needle: true
+            segments:
+              - from: 0
+                color: "#43a047"
+              - from: 10
+                color: "#fdd835"
+              - from: 25
+                color: "#e53935"
+          - type: gauge
+            entity: sensor.wohnzimmer_view_plus_voc_teile
+            name: VOC
+            unit: ppb
+            min: 0
+            max: 2500
+            needle: true
+            segments:
+              - from: 0
+                color: "#43a047"
+              - from: 250
+                color: "#fdd835"
+              - from: 2000
+                color: "#e53935"
+          - type: gauge
+            entity: sensor.wohnzimmer_view_plus_radon
+            name: Radon (24h-Mittel)
+            unit: Bq/m³
+            min: 0
+            max: 300
+            needle: true
+            segments:
+              - from: 0
+                color: "#43a047"
+              - from: 100
+                color: "#fdd835"
+              - from: 150
+                color: "#e53935"
+          - type: gauge
+            entity: sensor.wohnzimmer_view_plus_luftfeuchtigkeit
+            name: Luftfeuchtigkeit
+            unit: "%"
+            min: 0
+            max: 100
+            needle: true
+            segments:
+              - from: 0
+                color: "#e53935"
+              - from: 25
+                color: "#fdd835"
+              - from: 30
+                color: "#43a047"
+              - from: 60
+                color: "#fdd835"
+              - from: 70
+                color: "#e53935"
+          - type: tile
+            entity: sensor.wohnzimmer_view_plus_temperatur
+            name: Temperatur
+          - type: tile
+            entity: sensor.wohnzimmer_view_plus_atmospharischer_druck
+            name: Luftdruck
+          - type: tile
+            entity: sensor.luftdruck_trend
+            name: Luftdruck-Trend (3h)
+
+      # ------------------ Verlaeufe ------------------
+      - type: grid
+        cards:
+          - type: heading
+            heading: Verläufe
+            heading_style: title
+            icon: mdi:chart-line
+          - type: history-graph
+            title: CO2 & VOC (24 h)
+            hours_to_show: 24
+            entities:
+              - sensor.wohnzimmer_view_plus_kohlendioxid
+              - sensor.wohnzimmer_view_plus_voc_teile
+          - type: history-graph
+            title: Feinstaub (24 h)
+            hours_to_show: 24
+            entities:
+              - sensor.wohnzimmer_view_plus_pm1
+              - sensor.wohnzimmer_view_plus_pm25
+          - type: history-graph
+            title: Radon (7 Tage, 24h-Mittelwert)
+            hours_to_show: 168
+            entities:
+              - sensor.wohnzimmer_view_plus_radon
+          - type: history-graph
+            title: Klima (24 h)
+            hours_to_show: 24
+            entities:
+              - sensor.wohnzimmer_view_plus_temperatur
+              - sensor.wohnzimmer_view_plus_luftfeuchtigkeit
