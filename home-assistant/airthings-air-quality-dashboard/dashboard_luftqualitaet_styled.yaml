@@ -1,0 +1,272 @@
+# =====================================================================
+# Air-Quality-Dashboard "Styled" fuer Home Assistant (Airthings View Plus)
+# raspberry.tips — Bonus-Variante mit drei HACS-Karten:
+#   1. Mushroom        (HACS -> "Mushroom", Repo piitaya/lovelace-mushroom)
+#   2. mini-graph-card (HACS -> "mini-graph-card", Repo kalkih/mini-graph-card)
+#   3. Gauge Card Pro  (HACS -> "Gauge Card Pro", Repo benjamin-dcs/gauge-card-pro)
+# Nach der Installation Browser-Cache leeren / neu laden (Strg+F5).
+#
+# Ampel-Farben = offizielle Airthings-Schwellwerte.
+# Entity-IDs anpassen (Beispiel-Geraet: "Wohnzimmer View Plus").
+# Achtung Umlaute: HA kuerzt sie in Entity-IDs zu a/o/u
+# (Produktivität -> luftprofil_produktivitat).
+# =====================================================================
+views:
+  - title: Luftqualität
+    path: luftqualitaet
+    type: sections
+    max_columns: 3
+    sections:
+
+      # ------------------ Empfehlungsprofile (Mushroom) ------------------
+      - type: grid
+        cards:
+          - type: heading
+            heading: Empfehlungsprofile
+            heading_style: title
+            icon: mdi:account-heart-outline
+
+          - type: custom:mushroom-template-card
+            entity: sensor.luftprofil_kopfschmerzen
+            primary: Kopfschmerzen
+            secondary: >-
+              {{ states('sensor.luftprofil_kopfschmerzen') }} ·
+              {{ state_attr('sensor.luftprofil_kopfschmerzen', 'probleme') }}
+            icon: mdi:head-flash-outline
+            icon_color: >-
+              {% set s = states('sensor.luftprofil_kopfschmerzen') %}
+              {{ 'green' if s == 'Gut' else ('amber' if s == 'Eingeschränkt' else 'red') }}
+            multiline_secondary: true
+            tap_action:
+              action: more-info
+
+          - type: custom:mushroom-template-card
+            entity: sensor.luftprofil_schlaf
+            primary: Schlaf
+            secondary: >-
+              {{ states('sensor.luftprofil_schlaf') }} ·
+              {{ state_attr('sensor.luftprofil_schlaf', 'probleme') }}
+            icon: mdi:sleep
+            icon_color: >-
+              {% set s = states('sensor.luftprofil_schlaf') %}
+              {{ 'green' if s == 'Gut' else ('amber' if s == 'Eingeschränkt' else 'red') }}
+            multiline_secondary: true
+            tap_action:
+              action: more-info
+
+          - type: custom:mushroom-template-card
+            entity: sensor.luftprofil_produktivitat
+            primary: Produktivität
+            secondary: >-
+              {{ states('sensor.luftprofil_produktivitat') }} ·
+              {{ state_attr('sensor.luftprofil_produktivitat', 'probleme') }}
+            icon: mdi:lightbulb-on-outline
+            icon_color: >-
+              {% set s = states('sensor.luftprofil_produktivitat') %}
+              {{ 'green' if s == 'Gut' else ('amber' if s == 'Eingeschränkt' else 'red') }}
+            multiline_secondary: true
+            tap_action:
+              action: more-info
+
+          - type: custom:mushroom-template-card
+            entity: sensor.luftprofil_allergie
+            primary: Allergie & Feinstaub
+            secondary: >-
+              {{ states('sensor.luftprofil_allergie') }} ·
+              {{ state_attr('sensor.luftprofil_allergie', 'probleme') }}
+            icon: mdi:flower-pollen-outline
+            icon_color: >-
+              {% set s = states('sensor.luftprofil_allergie') %}
+              {{ 'green' if s == 'Gut' else ('amber' if s == 'Eingeschränkt' else 'red') }}
+            multiline_secondary: true
+            tap_action:
+              action: more-info
+
+      # ------------------ Ampel-Gauges ------------------
+      - type: grid
+        cards:
+          - type: heading
+            heading: Messwerte
+            heading_style: title
+            icon: mdi:air-filter
+          - type: custom:gauge-card-pro
+            entity: sensor.wohnzimmer_view_plus_kohlendioxid
+            min: 400
+            max: 2000
+            needle: true
+            gradient: true
+            gradient_resolution: medium
+            segments:
+              - from: 400
+                color: "#43a047"
+              - from: 800
+                color: "#fdd835"
+              - from: 1000
+                color: "#e53935"
+            titles:
+              primary:
+                value: CO2
+              secondary:
+                value: "{{ states('sensor.wohnzimmer_view_plus_kohlendioxid') }} ppm"
+          - type: custom:gauge-card-pro
+            entity: sensor.wohnzimmer_view_plus_pm25
+            min: 0
+            max: 50
+            needle: true
+            gradient: true
+            gradient_resolution: medium
+            segments:
+              - from: 0
+                color: "#43a047"
+              - from: 10
+                color: "#fdd835"
+              - from: 25
+                color: "#e53935"
+            titles:
+              primary:
+                value: Feinstaub PM2.5
+              secondary:
+                value: "{{ states('sensor.wohnzimmer_view_plus_pm25') }} µg/m³"
+          - type: custom:gauge-card-pro
+            entity: sensor.wohnzimmer_view_plus_voc_teile
+            min: 0
+            max: 2500
+            needle: true
+            gradient: true
+            gradient_resolution: medium
+            segments:
+              - from: 0
+                color: "#43a047"
+              - from: 250
+                color: "#fdd835"
+              - from: 2000
+                color: "#e53935"
+            titles:
+              primary:
+                value: VOC
+              secondary:
+                value: "{{ states('sensor.wohnzimmer_view_plus_voc_teile') }} ppb"
+          - type: custom:gauge-card-pro
+            entity: sensor.wohnzimmer_view_plus_radon
+            min: 0
+            max: 300
+            needle: true
+            gradient: true
+            gradient_resolution: medium
+            segments:
+              - from: 0
+                color: "#43a047"
+              - from: 100
+                color: "#fdd835"
+              - from: 150
+                color: "#e53935"
+            titles:
+              primary:
+                value: Radon (24h-Mittel)
+              secondary:
+                value: "{{ states('sensor.wohnzimmer_view_plus_radon') }} Bq/m³"
+          - type: custom:mushroom-template-card
+            entity: sensor.wohnzimmer_view_plus_temperatur
+            primary: "{{ states('sensor.wohnzimmer_view_plus_temperatur') }} °C"
+            secondary: Temperatur
+            icon: mdi:thermometer
+            icon_color: >-
+              {% set t = states('sensor.wohnzimmer_view_plus_temperatur') | float(21) %}
+              {{ 'green' if 18 <= t <= 25 else 'red' }}
+          - type: custom:mushroom-template-card
+            entity: sensor.wohnzimmer_view_plus_luftfeuchtigkeit
+            primary: "{{ states('sensor.wohnzimmer_view_plus_luftfeuchtigkeit') }} %"
+            secondary: Luftfeuchtigkeit
+            icon: mdi:water-percent
+            icon_color: >-
+              {% set h = states('sensor.wohnzimmer_view_plus_luftfeuchtigkeit') | float(50) %}
+              {{ 'green' if 30 <= h < 60 else ('amber' if 25 <= h < 30 or 60 <= h < 70 else 'red') }}
+          - type: custom:mushroom-template-card
+            entity: sensor.wohnzimmer_view_plus_atmospharischer_druck
+            primary: "{{ states('sensor.wohnzimmer_view_plus_atmospharischer_druck') }} hPa"
+            secondary: >-
+              Luftdruck ({{ states('sensor.luftdruck_trend') | float(0) | round(1) }} hPa/h)
+            icon: mdi:gauge
+            icon_color: >-
+              {% set t = states('sensor.luftdruck_trend') | float(0) | abs %}
+              {{ 'green' if t < 1.5 else ('amber' if t < 2.5 else 'red') }}
+
+      # ------------------ Verlaeufe (mini-graph-card) ------------------
+      - type: grid
+        cards:
+          - type: heading
+            heading: Verläufe
+            heading_style: title
+            icon: mdi:chart-line
+          - type: custom:mini-graph-card
+            name: CO2 (24 h)
+            entities:
+              - sensor.wohnzimmer_view_plus_kohlendioxid
+            hours_to_show: 24
+            points_per_hour: 4
+            line_width: 3
+            smoothing: true
+            color_thresholds:
+              - value: 400
+                color: "#43a047"
+              - value: 800
+                color: "#fdd835"
+              - value: 1000
+                color: "#e53935"
+          - type: custom:mini-graph-card
+            name: Feinstaub PM2.5 (24 h)
+            entities:
+              - sensor.wohnzimmer_view_plus_pm25
+            hours_to_show: 24
+            points_per_hour: 4
+            line_width: 3
+            smoothing: true
+            color_thresholds:
+              - value: 0
+                color: "#43a047"
+              - value: 10
+                color: "#fdd835"
+              - value: 25
+                color: "#e53935"
+          - type: custom:mini-graph-card
+            name: VOC (24 h)
+            entities:
+              - sensor.wohnzimmer_view_plus_voc_teile
+            hours_to_show: 24
+            points_per_hour: 4
+            line_width: 3
+            smoothing: true
+            color_thresholds:
+              - value: 0
+                color: "#43a047"
+              - value: 250
+                color: "#fdd835"
+              - value: 2000
+                color: "#e53935"
+          - type: custom:mini-graph-card
+            name: Radon (7 Tage)
+            entities:
+              - sensor.wohnzimmer_view_plus_radon
+            hours_to_show: 168
+            points_per_hour: 0.25
+            line_width: 3
+            smoothing: true
+            color_thresholds:
+              - value: 0
+                color: "#43a047"
+              - value: 100
+                color: "#fdd835"
+              - value: 150
+                color: "#e53935"
+          - type: custom:mini-graph-card
+            name: Klima (24 h)
+            entities:
+              - entity: sensor.wohnzimmer_view_plus_temperatur
+                name: Temperatur
+              - entity: sensor.wohnzimmer_view_plus_luftfeuchtigkeit
+                name: Luftfeuchte
+                y_axis: secondary
+            hours_to_show: 24
+            points_per_hour: 4
+            line_width: 3
+            smoothing: true
