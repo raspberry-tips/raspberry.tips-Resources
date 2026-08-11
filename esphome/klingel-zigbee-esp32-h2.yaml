@@ -3,7 +3,7 @@
 # Anbindung an Home Assistant via Zigbee (ZHA) - der Node laeuft gleichzeitig
 # als Zigbee-Router/Repeater.
 #
-# Tutorial: https://raspberry.tips/smart-home/tuerklingel-smart-machen
+# Tutorial: https://raspberry.tips/smart-home/tuerklingel-smart-machen-esp32-zigbee-home-assistant
 # Getestet mit ESPHome 2026.7.4 auf ESP32-H2 rev1.2
 #
 # WICHTIG: Die zigbee-Komponente ist seit Anfang 2026 im ESPHome-CORE.
