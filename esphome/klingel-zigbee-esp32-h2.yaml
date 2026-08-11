@@ -84,9 +84,17 @@ binary_sensor:
 # =============================================================================
 # Test-Reihenfolge nach dem Flashen:
 #   1. In ZHA anlernen (Permit Join), Log auf "Zigbee-Netz beigetreten" pruefen
-#   2. OHNE Optokoppler: Drahtbruecke GPIO12 <-> GND = Klingeldruck simulieren
-#   3. Erst wenn das in HA sauber schaltet, kommt der PC817 dran
-#   4. Erst danach ueberhaupt an die Klingel
+#   2. Trockentest, noch ohne Klingel und ohne Optokoppler:
+#      GPIO12 kurz mit GND bruecken.
+#      >>> NUR gegen MASSE bruecken. Niemals 5 V an einen GPIO! <<<
+#      Genau das macht der Optokoppler spaeter auch: Er zieht GPIO12 auf GND.
+#      Die 5 V der Klingel erreichen den ESP zu keinem Zeitpunkt.
+#   3. Erst wenn das in HA sauber schaltet, den PC817 dazwischenhaengen
+#   4. Erst danach an die Klingel
+#
+# Merke: Der Pin "5V" am Board darf 5 V sehen (er fuehrt auf den Spannungs-
+# regler). Die GPIOs duerfen es NICHT - die sind 3,3-V-Logik. Genau deshalb
+# der Optokoppler.
 #
 # Hinweis: Ueber Zigbee werden nur Name und Zustand uebertragen. Ein
 # device_class gehoert deshalb nicht hierher, sondern wird an der Entity
