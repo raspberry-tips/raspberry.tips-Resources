@@ -63,30 +63,32 @@ sensor:
     name: "Uptime"
     update_interval: 60s
 
+binary_sensor:
+  # Der Klingel-Eingang. Bewusst SOFORT mit drin: Jede spaetere Aenderung
+  # bedeutet reflashen UND das Geraet in ZHA loeschen + neu anlernen.
+  - platform: gpio
+    id: klingel_gpio
+    name: "Klingel"
+    report: force        # PFLICHT bei ZHA! Sonst drosselt ZHA das Reporting
+                         # auf 30 s - fuer eine Klingel voellig unbrauchbar.
+    pin:
+      number: GPIO12
+      inverted: true     # PC817 zieht den Pin bei Klingeldruck auf GND
+      mode:
+        input: true
+        pullup: true     # Ruhezustand = HIGH
+    filters:
+      - delayed_on: 30ms   # Prellen / Stoerimpulse ausfiltern
+      - delayed_off: 500ms # PLATZHALTER - am echten Signal nachmessen und anpassen
 
 # =============================================================================
-# SCHRITT 3 - NOCH NICHT AKTIV. Erst nach erfolgreichem ZHA-Pairing einkommentieren.
-# =============================================================================
+# Test-Reihenfolge nach dem Flashen:
+#   1. In ZHA anlernen (Permit Join), Log auf "Zigbee-Netz beigetreten" pruefen
+#   2. OHNE Optokoppler: Drahtbruecke GPIO12 <-> GND = Klingeldruck simulieren
+#   3. Erst wenn das in HA sauber schaltet, kommt der PC817 dran
+#   4. Erst danach ueberhaupt an die Klingel
 #
-# binary_sensor:
-#   - platform: gpio
-#     id: klingel_gpio
-#     name: "Klingel"
-#     device_class: sound
-#     report: force        # PFLICHT bei ZHA! Sonst drosselt ZHA das Reporting
-#                          # auf 30 s - fuer eine Klingel voellig unbrauchbar.
-#     pin:
-#       number: GPIO12
-#       inverted: true     # PC817 zieht den Pin bei Klingeldruck auf GND
-#       mode:
-#         input: true
-#         pullup: true
-#     filters:
-#       - delayed_on: 30ms   # Prellen / Stoerimpulse ausfiltern
-#       - delayed_off: 500ms # Wert erst nach Messung am echten Signal festlegen!
-#
-# Test-Reihenfolge:
-#   1. OHNE Optokoppler: Drahtbruecke GPIO12 <-> GND = Klingeldruck simulieren
-#   2. Erst wenn das in HA sauber schaltet, kommt der PC817 dran
-#   3. Erst danach ueberhaupt an die Klingel
+# Hinweis: Ueber Zigbee werden nur Name und Zustand uebertragen. Ein
+# device_class gehoert deshalb nicht hierher, sondern wird an der Entity
+# in Home Assistant gesetzt.
 # =============================================================================
