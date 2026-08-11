@@ -1,0 +1,92 @@
+# =============================================================================
+# Klingel-Sensor: Waveshare ESP32-H2-Zero + PC817-Optokoppler
+# Anbindung an Home Assistant via Zigbee (ZHA) - der Node laeuft gleichzeitig
+# als Zigbee-Router/Repeater.
+#
+# Tutorial: https://raspberry.tips/smart-home/tuerklingel-smart-machen
+# Getestet mit ESPHome 2026.7.4 auf ESP32-H2 rev1.2
+#
+# WICHTIG: Die zigbee-Komponente ist seit Anfang 2026 im ESPHome-CORE.
+#          KEIN external_components mehr noetig.
+#
+# Hardware: Waveshare ESP32-H2-Zero
+#   - ESP32-H2FH4S, 4 MB Flash, LDO ME6217C33M5G (max. 800 mA)
+#   - USB-C direkt am nativen USB-Serial/JTAG -> kein Boot-Button-Gedruecke
+#   - Pin-kompatibel zum ESP32-H2-DevKitM-1 (im ESPHome-Wizard "Espressif
+#     ESP32-H2-DevKit" auswaehlen)
+#
+# ACHTUNG - der ESP32-H2 hat KEIN WLAN!
+#   Kein wifi:, kein api:, kein ota: - das ist Absicht, nicht vergessen.
+#   Folgen:
+#     * Geraet steht im ESPHome-Dashboard DAUERHAFT auf "offline" (normal!)
+#     * Logs nur ueber USB (Web Serial im Installations-Dialog)
+#     * Jede Config-Aenderung = USB-Kabel dran + neu flashen
+#     * Laut ESPHome-Doc danach Geraet in ZHA loeschen und neu anlernen
+#   -> Config auf dem Schreibtisch fertigstellen, ERST DANN einbauen.
+#
+# Belegte / tabu Pins am H2-Zero:
+#   GPIO8      Strapping (LOG) + WS2812-RGB-LED
+#   GPIO9      Strapping (BOOT-Taster)
+#   GPIO26/27  USB D- / D+
+#   GPIO23/24  UART0 RX/TX
+#   GPIO2-5    JTAG (MTMS/MTDO/MTCK/MTDI) - nutzbar, aber unnoetig riskant
+#   -> Klingel-Eingang: GPIO12 (sauberer GPIO, rechte Stiftleiste)
+#
+# Stromversorgung: 5 V aus dem Klingel-Innenteil auf Pin "5V" + "GND".
+#   Ein Zigbee-ROUTER schlaeft nie (RX dauerhaft an) -> ~40-80 mA Dauerlast.
+# =============================================================================
+
+esphome:
+  name: doorbell-sensor
+  friendly_name: doorbell-sensor
+
+esp32:
+  variant: esp32h2
+  flash_size: 4MB
+  framework:
+    type: esp-idf
+
+logger:
+  level: INFO
+
+zigbee:
+  id: zb
+  router: true              # <- der Repeater-Schalter: Router statt End Device
+  power_source: DC_SOURCE   # netzbetrieben, schlaeft nicht
+  on_join:
+    then:
+      - logger.log: "Zigbee-Netz beigetreten"
+
+sensor:
+  # Lebenszeichen - ohne ESPHome-API der einzige Weg zu sehen, ob der Node noch da ist
+  - platform: uptime
+    name: "Uptime"
+    update_interval: 60s
+
+
+# =============================================================================
+# SCHRITT 3 - NOCH NICHT AKTIV. Erst nach erfolgreichem ZHA-Pairing einkommentieren.
+# =============================================================================
+#
+# binary_sensor:
+#   - platform: gpio
+#     id: klingel_gpio
+#     name: "Klingel"
+#     device_class: sound
+#     report: force        # PFLICHT bei ZHA! Sonst drosselt ZHA das Reporting
+#                          # auf 30 s - fuer eine Klingel voellig unbrauchbar.
+#     pin:
+#       number: GPIO12
+#       inverted: true     # PC817 zieht den Pin bei Klingeldruck auf GND
+#       mode:
+#         input: true
+#         pullup: true
+#     filters:
+#       - delayed_on: 30ms   # Prellen / Stoerimpulse ausfiltern
+#       - delayed_off: 500ms # Wert erst nach Messung am echten Signal festlegen!
+#
+# Test-Reihenfolge:
+#   1. OHNE Optokoppler: Drahtbruecke GPIO12 <-> GND = Klingeldruck simulieren
+#   2. Erst wenn das in HA sauber schaltet, kommt der PC817 dran
+#   3. Erst danach ueberhaupt an die Klingel
+# =============================================================================
