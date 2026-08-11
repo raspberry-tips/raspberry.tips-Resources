@@ -34,6 +34,27 @@
 #
 # Stromversorgung: 5 V aus dem Klingel-Innenteil auf Pin "5V" + "GND".
 #   Ein Zigbee-ROUTER schlaeft nie (RX dauerhaft an) -> ~40-80 mA Dauerlast.
+#
+# ANSCHLUSS ueber ein PC817-Optokopplermodul (4 Draehte am Modul):
+#   Eingangsseite:  Klingel-Signal -> IN1        Klingel-Masse -> G
+#   Ausgangsseite:  OUT1           -> GPIO12     G             -> GND des ESP
+#   VCC der Ausgangsseite bleibt UNBESCHALTET.
+#   JUMPER ABZIEHEN.
+#
+#   Warum: Der PC817-Ausgang ist ein Open Collector - er kann nur gegen Masse
+#   ziehen. Den Ruhepegel macht der interne Pull-up des ESP (pullup: true).
+#   Was die Jumper auf diesen No-Name-Boards genau tun, beschreibt keine zwei
+#   Quellen gleich (Pull-up-Freigabe / High-Low-Umschaltung / Masse-Bruecke,
+#   teils widerspruechlich im selben Datenblatt). Abgezogen ist der Ausgang in
+#   jeder Lesart ein reiner Open Collector - und ohne beschaltetes VCC kann
+#   ueberhaupt keine Fremdspannung an den GPIO gelangen.
+#
+#   Der Vorwiderstand fuer die LED ist auf solchen Modulen (Eingang 3,6-24 V)
+#   bereits bestueckt - KEINEN zusaetzlichen davorsetzen.
+#
+#   Diagnose: Bleibt der Sensor dauerhaft "on", zieht noch ein Jumper den
+#   Ausgang auf Masse. Jeder Kanal hat ausserdem eine Status-LED, die beim
+#   Ausloesen leuchtet - damit sieht man die Eingangsseite ohne Messgeraet.
 # =============================================================================
 
 esphome:
