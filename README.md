@@ -13,6 +13,8 @@ als Ergänzung zu den Tutorials auf **[raspberry.tips](https://raspberry.tips)**
 | `autostart/` | systemd Service-Templates für den Raspberry Pi Autostart | [→ Tutorial](https://raspberry.tips/raspberrypi-einsteiger/raspberry-pi-autostart-von-skripten-und-programmen-einrichten) |
 | `pihole/` | Pi-hole Konfiguration und Blocklisten | [→ Tutorial](https://raspberry.tips/raspberrypi-tutorials/pi-hole-einrichten-netzwerkweiter-werbeblocker) |
 | `shelly-wall-display/` | Home-Assistant-Dashboard-YAML (Kiosk Mode, Browser-Mod-Popups) fürs Shelly Wall Display X2i | [→ Tutorial](https://raspberry.tips/smart-home/shelly-wall-display-home-assistant-dashboard-einbinden) |
+| `esphome/` | ESPHome-Konfigurationen: Zigbee-Klingelsensor (ESP32-H2), Bewegungsmelder, BME280, Fensterkontakt | [→ Tutorial](https://raspberry.tips/smart-home/tuerklingel-smart-machen-esp32-zigbee-home-assistant) |
+| `home-assistant/` | Automatisierungen und Dashboards: Klingel mit Kamera-Push, Wall-Display-Steuerung, Airthings | [→ Tutorial](https://raspberry.tips/smart-home/tuerklingel-smart-machen-esp32-zigbee-home-assistant) |
 
 ## Verwendung
 
