@@ -1,0 +1,95 @@
+# Klingel-Automatisierung für Home Assistant
+# -----------------------------------------------------------------------
+# Ergänzung zum Tutorial:
+# https://raspberry.tips/smart-home/tuerklingel-smart-machen-esp32-zigbee-home-assistant
+#
+# Ablauf: Beim Klingeln geht sofort eine Benachrichtigung ohne Anhang raus.
+# Danach wacht das Wandtablet auf und spielt einen Gong, Home Assistant holt
+# in Ruhe einen Schnappschuss, und eine zweite Benachrichtigung mit demselben
+# `tag` ersetzt die erste - jetzt mit Bild. So hängt die Alarmzeit nicht an
+# der Kamera-Latenz.
+#
+# Anzupassen:
+#   binary_sensor.klingel              -> eure Klingel-Entität
+#   notify.mobile_app_dein_smartphone  -> euer Benachrichtigungsdienst
+#   camera.hausture_rtsp               -> eure Kamera (lokale Stream-Entität!)
+#
+# Die rest_command-Befehle fürs Wandtablet stehen in klingel-rest-command.yaml.
+# Wer kein Wandtablet hat, lässt die drei rest_command-Aktionen und den
+# browser_mod-Block einfach weg.
+# -----------------------------------------------------------------------
+
+alias: Klingel - Kamera-Stream aufs Handy
+description: Sofortmeldung beim Klingeln, der Schnappschuss wird nachgereicht
+triggers:
+  - trigger: state
+    entity_id:
+      - binary_sensor.klingel
+    to: "on"
+actions:
+  # 1. Sofort raus - ohne Kamerazugriff, ohne Anhang.
+  #    Kein entity_id und kein url/clickAction: Beides würde die App dazu
+  #    bringen, vor der Anzeige noch etwas zu laden.
+  - action: notify.mobile_app_dein_smartphone
+    data:
+      title: "🔔 Es klingelt an der Haustür"
+      message: "Kamerabild folgt …"
+      data:
+        tag: klingel
+        push:
+          interruption-level: time-sensitive
+
+  # 2. Wandtablet aufwecken und Gong spielen.
+  #    Helligkeit VOR dem Einschalten setzen: Bei aktiver Auto-Helligkeit
+  #    bleibt das Panel sonst dunkel.
+  - action: rest_command.wd_helligkeit
+  - action: rest_command.wd_screen_on
+  - action: rest_command.wd_klingelton
+    data:
+      id: 1        # 1..Anzahl der hinterlegten Klingeltöne
+      volume: 8    # 1..maximale Lautstärke
+
+  # 3. Schnappschuss von der lokalen Stream-Entität.
+  #    Die Cloud-Entitäten der Hersteller-Integrationen liefern oft leere
+  #    Bilddaten - dann kommt die Benachrichtigung ohne Bild an.
+  - action: camera.snapshot
+    target:
+      entity_id: camera.hausture_rtsp
+    data:
+      filename: /config/www/klingel_schnappschuss.jpg
+
+  # 4. Ersetzt die erste Meldung über denselben tag - jetzt mit Bild.
+  #    attachment.url statt image: Die iOS-App wertet nur attachment.url und
+  #    entity_id aus, einen image-Parser gibt es dort nicht. Der Pfad muss
+  #    relativ bleiben, sonst schickt die App keine Anmeldedaten mit.
+  #    KEIN url/uri/clickAction setzen: Die App nimmt den ersten dieser drei
+  #    Werte und öffnet ihn; "entityId:..." ist Android-Syntax und läuft auf
+  #    iOS ins Leere. Ohne diese Keys fällt sie auf entity_id zurück und
+  #    öffnet die Kamera-Ansicht.
+  - action: notify.mobile_app_dein_smartphone
+    data:
+      title: "🔔 Es klingelt an der Haustür"
+      message: "Antippen für den Live-Stream"
+      data:
+        tag: klingel
+        attachment:
+          url: /local/klingel_schnappschuss.jpg
+        entity_id: camera.hausture_rtsp
+        push:
+          sound: none
+          interruption-level: time-sensitive
+
+  # 5. Popup aufs Wandtablet. Das Display ist jetzt wach, die Weboberfläche
+  #    braucht einen Moment für ihre Verbindung.
+  - delay:
+      milliseconds: 500
+  - action: browser_mod.popup
+    data:
+      title: Haustür
+      timeout: 30000
+      content:
+        type: picture-glance
+        camera_image: camera.hausture_rtsp
+        camera_view: live
+        entities: []
+mode: single
