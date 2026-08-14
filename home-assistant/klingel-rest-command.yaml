@@ -1,0 +1,111 @@
+# rest_command-Befehle für das Shelly Wall Display X2i
+# -----------------------------------------------------------------------
+# Ergänzung zum Tutorial:
+# https://raspberry.tips/smart-home/tuerklingel-smart-machen-esp32-zigbee-home-assistant
+#
+# Einbindung, Variante A (empfohlen) - Datei nach /config/ legen und in die
+# configuration.yaml eine einzige Zeile eintragen:
+#
+#   rest_command: !include klingel_rest_command.yaml
+#
+# Variante B - Inhalt dieser Datei direkt in die configuration.yaml kopieren,
+# dann muss dort einmal "rest_command:" darueberstehen und alles eine Ebene
+# weiter eingerueckt werden.
+#
+# In die secrets.yaml gehoert dazu:
+#   shelly_wd_password: DEIN_NEUES_PASSWORT
+#
+# IP-Adresse unten ueberall anpassen. Dem Wall Display vorher eine feste IP
+# oder eine DHCP-Reservierung geben, sonst brechen die Aufrufe beim naechsten
+# Lease-Wechsel weg.
+#
+# Nach dem Anlegen: Entwicklerwerkzeuge -> YAML -> "RESTful Commands" neu
+# laden. Danach tauchen die Befehle im Automatisierungs-Editor auf.
+#
+# Hinweis zur Authentifizierung: Shelly Gen2 und neuer verlangt Digest-Auth.
+# rest_command kann das ueber "authentication: digest" - ein Umweg ueber
+# shell_command mit curl ist nicht noetig.
+# =====================================================================
+
+# --- Bildschirm hell schalten ---------------------------------------
+# Immer VOR wd_screen_on aufrufen: Bei aktiver Auto-Helligkeit bleibt das
+# Panel nach dem Einschalten sonst bei rund 37 Prozent haengen.
+#
+# ACHTUNG: Dieser Aufruf laeuft als JSON-RPC per POST an /rpc und NICHT als
+# GET-Query. Grund: Der Parameter enthaelt verschachteltes JSON, und die
+# GET-Variante scheitert daran (sie sieht dabei wie ein Anmeldefehler aus).
+# Die einfachen Aufrufe weiter unten funktionieren als GET problemlos.
+# Alternative als GET, falls gewuenscht - dann aber ALLES prozentkodieren:
+#   http://192.168.x.x/rpc/Ui.SetConfig?config=%7B%22brightness%22%3A%7B%22level%22%3A100%2C%22auto%22%3Afalse%7D%7D
+wd_helligkeit:
+  url: 'http://192.168.x.x/rpc'
+  method: post
+  content_type: 'application/json'
+  payload: '{"id":1,"src":"ha","method":"Ui.SetConfig","params":{"config":{"brightness":{"level":100,"auto":false}}}}'
+  authentication: digest
+  username: admin
+  password: !secret shelly_wd_password
+
+# --- Bildschirm einschalten -----------------------------------------
+wd_screen_on:
+  url: 'http://192.168.x.x/rpc/Ui.Screen.Set?params={"on":true}'
+  authentication: digest
+  username: admin
+  password: !secret shelly_wd_password
+
+# --- Bildschirm ausschalten -----------------------------------------
+# Optional: Wenn der Naeherungssensor das Panel ohnehin wieder schlafen
+# legt, brauchst du das nicht.
+wd_screen_off:
+  url: 'http://192.168.x.x/rpc/Ui.Screen.Set?params={"on":false}'
+  authentication: digest
+  username: admin
+  password: !secret shelly_wd_password
+
+# --- Klingelton abspielen -------------------------------------------
+# Aufruf mit:
+#   action: rest_command.wd_klingelton
+#   data:
+#     id: 1        # 1..Anzahl der hinterlegten Klingeltoene
+#     volume: 8    # 1..maximale Lautstaerke
+wd_klingelton:
+  url: 'http://192.168.x.x/rpc/Media.MediaPlayer.PlayRingtone?id={{ id }}&volume={{ volume }}'
+  authentication: digest
+  username: admin
+  password: !secret shelly_wd_password
+
+# --- Lautstaerke setzen ---------------------------------------------
+# Aufruf mit data: { volume: 5 }
+wd_lautstaerke:
+  url: 'http://192.168.x.x/rpc/Media.SetVolume?volume={{ volume }}'
+  authentication: digest
+  username: admin
+  password: !secret shelly_wd_password
+
+# =====================================================================
+# Weitere nuetzliche Befehle - bei Bedarf einkommentieren
+# =====================================================================
+#
+# Punkt auf dem Touchscreen antippen (x und y jeweils 0..719):
+# wd_tap:
+#   url: 'http://192.168.x.x/rpc/Ui.Tap?x={{ x }}&y={{ y }}'
+#   authentication: digest
+#   username: admin
+#   password: !secret shelly_wd_password
+#
+# Oberflaeche neu starten, wenn sich das Dashboard aufgehaengt hat:
+# wd_neustart:
+#   url: 'http://192.168.x.x/rpc/Sys.RestartApplication'
+#   authentication: digest
+#   username: admin
+#   password: !secret shelly_wd_password
+#
+# Kamera im Vollbild oeffnen - Parameter noch unbekannt. Ruf die Methode
+# einmal ohne Argumente auf, dann nennt das Geraet in der Fehlerantwort das
+# fehlende Argument. Ui.ListAvailable und Ui.GetConfig zeigen, welche
+# Quellen auf dem Display konfiguriert sind.
+# wd_kamera_vollbild:
+#   url: 'http://192.168.x.x/rpc/Ui.OpenCameraFullscreen'
+#   authentication: digest
+#   username: admin
+#   password: !secret shelly_wd_password
