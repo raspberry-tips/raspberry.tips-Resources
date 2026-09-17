@@ -3,12 +3,15 @@ import gpiod
 import time
 
 class MFRC522:
-    NRSTPD = 25  # RST-Pin (GPIO 25, physisch Pin 22)
+    NRSTPD = 25  # RST pin (GPIO 25, physical pin 22)
+
     MAX_LEN = 16
+
     PCD_IDLE       = 0x00
     PCD_TRANSCEIVE = 0x0C
     PCD_RESETPHASE = 0x0F
     PCD_CALCCRC    = 0x03
+
     PICC_REQIDL    = 0x26
     PICC_REQALL    = 0x52
     PICC_ANTICOLL  = 0x93
@@ -17,9 +20,11 @@ class MFRC522:
     PICC_READ      = 0x30
     PICC_WRITE     = 0xA0
     PICC_HALT      = 0x50
+
     MI_OK       = 0
     MI_NOTAGERR = 1
     MI_ERR      = 2
+
     Reserved00    = 0x00
     CommandReg    = 0x01
     CommIEnReg    = 0x02
@@ -50,11 +55,45 @@ class MFRC522:
         self.spi.open(0, 0)
         self.spi.max_speed_hz = 1000000
         self.spi.mode = 0
-        # GPIO RST-Pin via gpiod -- Pi 5 verwendet gpiochip4 (RP1-Chip)
-        self.chip = gpiod.Chip('gpiochip4')
-        self.rst_line = self.chip.get_line(self.NRSTPD)
-        self.rst_line.request(consumer='rc522', type=gpiod.LINE_REQ_DIR_OUT)
+
+        # RST pin via gpiod. The header GPIOs live on gpiochip0 on every
+        # model (Pi 5 included) - only old Pi 5 images (kernel before
+        # 6.6.45) had them on gpiochip4.
+        self._rst_open('/dev/gpiochip0')
+
         self.MFRC522_Init()
+
+    def _rst_open(self, chip_path):
+        """Claim the RST pin as output - works with libgpiod 1.6 and 2.x."""
+        if hasattr(gpiod, 'request_lines'):
+            # libgpiod 2.x (current Raspberry Pi OS)
+            from gpiod.line import Direction, Value
+            self._Value = Value
+            self.rst_req = gpiod.request_lines(
+                chip_path, consumer='rc522',
+                config={self.NRSTPD: gpiod.LineSettings(
+                    direction=Direction.OUTPUT, output_value=Value.INACTIVE)})
+        else:
+            # libgpiod 1.6 (older images)
+            self.rst_req = None
+            self.chip = gpiod.Chip(chip_path)
+            self.rst_line = self.chip.get_line(self.NRSTPD)
+            self.rst_line.request(consumer='rc522', type=gpiod.LINE_REQ_DIR_OUT)
+
+    def _rst_set(self, level):
+        if self.rst_req is not None:
+            self.rst_req.set_value(
+                self.NRSTPD, self._Value.ACTIVE if level else self._Value.INACTIVE)
+        else:
+            self.rst_line.set_value(level)
+
+    def _rst_close(self):
+        self._rst_set(0)
+        if self.rst_req is not None:
+            self.rst_req.release()
+        else:
+            self.rst_line.release()
+            self.chip.close()
 
     def MFRC522_Reset(self):
         self.Write_MFRC522(self.CommandReg, self.PCD_RESETPHASE)
@@ -67,7 +106,7 @@ class MFRC522:
         return val[1]
 
     def MFRC522_Init(self):
-        self.rst_line.set_value(1)
+        self._rst_set(1)
         self.MFRC522_Reset()
         self.Write_MFRC522(self.TModeReg,      0x8D)
         self.Write_MFRC522(self.TPrescalerReg, 0x3E)
@@ -137,7 +176,5 @@ class MFRC522:
         return (status, backData, backLen)
 
     def cleanup(self):
-        self.rst_line.set_value(0)
-        self.rst_line.release()
-        self.chip.close()
+        self._rst_close()
         self.spi.close()
