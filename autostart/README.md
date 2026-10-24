@@ -8,15 +8,15 @@ Fertige systemd Service-Templates für den Raspberry Pi Autostart.
 
 ```bash
 # Template nach /etc/systemd/system/ kopieren und anpassen
+# (User= und Pfade: "benutzer" durch euren Benutzernamen ersetzen, siehe whoami)
 sudo cp python-script.service /etc/systemd/system/meinskript.service
 sudo nano /etc/systemd/system/meinskript.service
 
-# Service aktivieren und starten
+# Service aktivieren und sofort starten
 sudo systemctl daemon-reload
-sudo systemctl enable meinskript.service
-sudo systemctl start meinskript.service
+sudo systemctl enable --now meinskript.service
 
-# Status prüfen
-sudo systemctl status meinskript.service
-sudo journalctl -u meinskript.service
+# Status und Ausgaben prüfen
+systemctl status meinskript.service
+journalctl -u meinskript.service
 ```
