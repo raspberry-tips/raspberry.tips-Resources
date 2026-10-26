@@ -155,7 +155,7 @@ class MFRC522:
             self.Write_MFRC522(self.FIFODataReg, val)
         self.Write_MFRC522(self.CommandReg, command)
         if command == self.PCD_TRANSCEIVE:
-            self.Write_MFRC522(self.BitFramingReg, 0x80)
+            self.Write_MFRC522(self.BitFramingReg, self.Read_MFRC522(self.BitFramingReg) | 0x80)
         i = 2000
         while True:
             n = self.Read_MFRC522(self.CommIrqReg)
