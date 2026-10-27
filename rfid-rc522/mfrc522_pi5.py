@@ -118,7 +118,7 @@ class MFRC522:
 
     def AntennaOn(self):
         temp = self.Read_MFRC522(self.TxControlReg)
-        if ~(temp & 0x03):
+        if (temp & 0x03) != 0x03:
             self.Write_MFRC522(self.TxControlReg, temp | 0x03)
 
     def MFRC522_Request(self, reqMode):
