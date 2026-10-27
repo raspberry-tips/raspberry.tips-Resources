@@ -1,6 +1,6 @@
 # RFID RC522 am Raspberry Pi 5
 
-Python-Code aus dem Artikel [RFID RC522 am Raspberry Pi 5 auslesen](https://raspberry.tips/rfid-rc522-raspberry-pi-5) auf raspberry.tips.
+Python-Code aus dem Artikel [RFID RC522 am Raspberry Pi 5 auslesen](https://raspberry.tips/raspberrypi-tutorials/rfid-rc522-raspberry-pi-5) auf raspberry.tips (English: [RFID RC522 on Raspberry Pi 5](https://raspberry.tips/en/raspberrypi-einsteiger/raspberry-pi-5-rfid-rc522-guide)).
 
 ## Voraussetzungen
 
@@ -28,7 +28,7 @@ python3 rfid_lesen.py
 
 | Datei | Beschreibung |
 |---|---|
-| `mfrc522_pi5.py` | MFRC522-Klasse fuer Pi 5 (spidev + gpiod, kein RPi.GPIO) |
+| `mfrc522_pi5.py` | MFRC522-Klasse für Pi 5 (spidev + gpiod, kein RPi.GPIO) |
 | `rfid_lesen.py` | UIDs von RFID-Tags auslesen |
 
 ## Verkabelung RC522 an Raspberry Pi 5
@@ -43,4 +43,4 @@ python3 rfid_lesen.py
 | SDA  | Pin 24 | GPIO 8  |
 | RST  | Pin 22 | GPIO 25 |
 
-Getestet auf Raspberry Pi 5 mit Raspberry Pi OS Bookworm (2025).
+Für den Raspberry Pi 5 mit aktuellem Raspberry Pi OS (libgpiod 2.x). Ältere Images mit libgpiod 1.6 erkennt die Klasse selbst.
