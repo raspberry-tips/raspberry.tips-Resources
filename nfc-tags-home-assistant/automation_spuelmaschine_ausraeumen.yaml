@@ -1,0 +1,61 @@
+alias: Spülmaschine ausräumen – Erinnerung
+description: Erinnert alle 30 Minuten, bis der NFC-Sticker an der Spülmaschine gescannt wird.
+mode: queued
+triggers:
+  - trigger: state
+    entity_id: input_boolean.spulmaschine_ausraumen
+    to: "on"
+    id: erinnern
+  - trigger: time_pattern
+    minutes: "/30"
+    id: erinnern
+  - trigger: tag
+    tag_id: spuelmaschine
+    id: gescannt
+actions:
+  - choose:
+      - alias: Erinnern, solange nicht ausgeräumt
+        conditions:
+          - condition: trigger
+            id: erinnern
+          - condition: state
+            entity_id: input_boolean.spulmaschine_ausraumen
+            state: "on"
+          - condition: time
+            after: "07:00:00"
+            before: "22:00:00"
+        sequence:
+          - action: notify.mobile_app_euer_iphone
+            data:
+              title: Spülmaschine ausräumen
+              message: Die Spülmaschine ist fertig. Scannt den Sticker, sobald sie leer ist.
+              data:
+                tag: spuelmaschine
+                url: /dashboard-erinnerungen/0
+      - alias: Sticker gescannt
+        conditions:
+          - condition: trigger
+            id: gescannt
+        sequence:
+          - if:
+              - condition: state
+                entity_id: input_boolean.spulmaschine_ausraumen
+                state: "on"
+            then:
+              - action: input_boolean.turn_off
+                target:
+                  entity_id: input_boolean.spulmaschine_ausraumen
+              - action: notify.mobile_app_euer_iphone
+                data:
+                  message: clear_notification
+                  data:
+                    tag: spuelmaschine
+              - action: notify.mobile_app_euer_iphone
+                data:
+                  title: ✓ Erledigt
+                  message: Spülmaschine als ausgeräumt markiert.
+            else:
+              - action: notify.mobile_app_euer_iphone
+                data:
+                  title: Nichts zu tun
+                  message: Die Spülmaschine war schon als ausgeräumt markiert.
