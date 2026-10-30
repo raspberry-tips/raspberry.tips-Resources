@@ -1,6 +1,6 @@
 # NFC-Tags in Home Assistant: Erinnern, bis es erledigt ist
 
-Script und Konfiguration zum Artikel „NFC-Tags in Home Assistant“ auf [raspberry.tips](https://raspberry.tips). Ein NFC-Sticker an Spülmaschine oder Tablettenbox beendet eine Erinnerung von Home Assistant erst, wenn er mit dem Handy gescannt wird.
+Script und Konfiguration zum Artikel [NFC-Tags in Home Assistant: Der Cent-Trick gegen Vergessen](https://raspberry.tips/smart-home/nfc-tags-in-home-assistant-erinnerung) auf raspberry.tips (English: [Home Assistant NFC Tags: Reminders That Stop When It's Done](https://raspberry.tips/en/smart-home/home-assistant-nfc-tags-reminders)). Die englische Fassung nutzt die Kennungen `dishwasher`/`pill` und englische Helfernamen, die Dateien hier entsprechen der deutschen. Ein NFC-Sticker an Spülmaschine oder Tablettenbox beendet eine Erinnerung von Home Assistant erst, wenn er mit dem Handy gescannt wird.
 
 ## Dateien
 
