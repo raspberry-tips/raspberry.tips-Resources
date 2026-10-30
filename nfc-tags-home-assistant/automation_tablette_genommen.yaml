@@ -1,0 +1,77 @@
+alias: Tablette genommen – Erinnerung
+description: Ab 3 Uhr offen, erinnert ab 8 Uhr alle 30 Minuten bis zum Scan. Ein zweiter Scan zeigt, wann die Tablette genommen wurde.
+mode: queued
+triggers:
+  - trigger: time
+    at: "03:00:00"
+    id: start
+  - trigger: state
+    entity_id: input_boolean.tablette_nehmen
+    to: "on"
+    id: erinnern
+  - trigger: time_pattern
+    minutes: "/30"
+    id: erinnern
+  - trigger: tag
+    tag_id: tablette
+    id: gescannt
+actions:
+  - choose:
+      - alias: Neuer Tag
+        conditions:
+          - condition: trigger
+            id: start
+        sequence:
+          - action: input_boolean.turn_on
+            target:
+              entity_id: input_boolean.tablette_nehmen
+      - alias: Erinnern, solange nicht genommen
+        conditions:
+          - condition: trigger
+            id: erinnern
+          - condition: state
+            entity_id: input_boolean.tablette_nehmen
+            state: "on"
+          - condition: time
+            after: "08:00:00"
+            before: "22:00:00"
+        sequence:
+          - action: notify.mobile_app_euer_iphone
+            data:
+              title: Tablette nehmen
+              message: Die Tablette für heute ist noch offen. Scannt den Sticker an der Box, wenn ihr sie genommen habt.
+              data:
+                tag: tablette
+                url: /dashboard-erinnerungen/0
+      - alias: Sticker gescannt
+        conditions:
+          - condition: trigger
+            id: gescannt
+        sequence:
+          - if:
+              - condition: state
+                entity_id: input_boolean.tablette_nehmen
+                state: "on"
+            then:
+              - action: input_boolean.turn_off
+                target:
+                  entity_id: input_boolean.tablette_nehmen
+              - action: input_datetime.set_datetime
+                target:
+                  entity_id: input_datetime.tablette_zuletzt_genommen
+                data:
+                  datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
+              - action: notify.mobile_app_euer_iphone
+                data:
+                  message: clear_notification
+                  data:
+                    tag: tablette
+              - action: notify.mobile_app_euer_iphone
+                data:
+                  title: ✓ Erledigt
+                  message: "Tablette um {{ now().strftime('%H:%M') }} Uhr als genommen markiert."
+            else:
+              - action: notify.mobile_app_euer_iphone
+                data:
+                  title: Schon erledigt
+                  message: "Die Tablette wurde bereits am {{ as_timestamp(states('input_datetime.tablette_zuletzt_genommen')) | timestamp_custom('%d.%m. um %H:%M') }} Uhr genommen."

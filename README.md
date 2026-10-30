@@ -16,6 +16,7 @@ als Ergänzung zu den Tutorials auf **[raspberry.tips](https://raspberry.tips)**
 | `esphome/` | ESPHome-Konfigurationen: Zigbee-Klingelsensor (ESP32-H2), Bewegungsmelder, BME280, Fensterkontakt | [→ Tutorial](https://raspberry.tips/smart-home/tuerklingel-smart-machen-esp32-zigbee-home-assistant) |
 | `home-assistant/` | Automatisierungen und Dashboards: Klingel mit Kamera-Push, Wall-Display-Steuerung, Airthings | [→ Tutorial](https://raspberry.tips/smart-home/tuerklingel-smart-machen-esp32-zigbee-home-assistant) |
 | `picamera2/` | Picamera2-Skripte: Foto, Video (MP4), MJPEG-Livestream, OpenCV, Bewegungserkennung, Zeitraffer | [→ Tutorial](https://raspberry.tips/raspberrypi-tutorials/picamera2-raspberry-pi-kamera-python) |
+| `nfc-tags-home-assistant/` | NFC-Sticker mit PN532 beschreiben und sperren, Home-Assistant-Erinnerungen bis zum Scan (Spülmaschine, Tablette) | [→ Tutorial](https://raspberry.tips/raspberrypi-tutorials/pn532-am-raspberry-pi-5) |
 
 ## Verwendung
 

@@ -1,0 +1,25 @@
+type: vertical-stack
+cards:
+  - type: tile
+    entity: input_boolean.spulmaschine_ausraumen
+    name: Spülmaschine ausräumen – offen
+    icon: mdi:dishwasher-alert
+    color: red
+    state_content: last_changed
+    tap_action:
+      action: none
+    visibility:
+      - condition: state
+        entity: input_boolean.spulmaschine_ausraumen
+        state: "on"
+  - type: tile
+    entity: input_boolean.spulmaschine_ausraumen
+    name: Spülmaschine ausgeräumt
+    icon: mdi:dishwasher
+    state_content: last_changed
+    tap_action:
+      action: none
+    visibility:
+      - condition: state
+        entity: input_boolean.spulmaschine_ausraumen
+        state: "off"
