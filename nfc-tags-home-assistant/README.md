@@ -31,7 +31,7 @@ Sticker flach und mittig auf die Antenne legen. Während des Schreibens nicht mi
 python nfc_ha_tag.py spuelmaschine --lock
 ```
 
-**Endgültig:** Ein gesperrter Sticker lässt sich nie wieder beschreiben, Lesen und Scannen funktionieren weiter. Das Script fragt vorher nach (`LOCK` eintippen), schreibt und prüft die Adresse und setzt erst dann die Lock-Bits (NTAG213-Datenblatt, Abschnitte 8.5.2–8.5.4). Nur für NTAG213.
+**Endgültig:** Ein gesperrter Sticker lässt sich nie wieder beschreiben, Lesen und Scannen funktionieren weiter. Das Script fragt vorher nach (`LOCK` eintippen), schreibt und prüft die Adresse, setzt erst dann die Lock-Bits (NTAG213-Datenblatt, Abschnitte 8.5.2–8.5.4) und liest sie zur Kontrolle zurück. Nur für NTAG213.
 
 ## Automationen
 
@@ -49,4 +49,4 @@ YAML in eine neue Automation einfügen (Drei-Punkte-Menü → In YAML bearbeiten
 
 Die Spülmaschinen-Automation erwartet, dass eure Fertigmeldung den Helfer einschaltet, z. B. die aus [Spülmaschine oder Waschmaschine fertig?](https://raspberry.tips/smart-home/spuelmaschine-waschmaschine-fertig-benachrichtigung-home-assistant).
 
-Getestet mit Home Assistant 2026.10, iPhone-App und Raspberry Pi 5 (Raspberry Pi OS), Oktober 2026.
+Getestet im Oktober 2026 mit Home Assistant 2026.10, der iPhone-App und einem Raspberry Pi 5 (Raspberry Pi OS): Beide Automationen laufen so in Home Assistant, im Test mit eigenem Benachrichtigungsdienst und eigener Dashboard-Adresse.

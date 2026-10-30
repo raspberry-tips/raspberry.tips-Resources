@@ -55,6 +55,16 @@ def lock_ntag213():
     return write_page(2, bytes([0x00, 0x00, 0xFF, 0xFF]))
 
 
+def lock_verified():
+    # the PN532 reports some refused writes as OK, so read the lock bits back
+    static = pn532.ntag2xx_read_block(2)
+    cc = pn532.ntag2xx_read_block(3)
+    dynamic = pn532.ntag2xx_read_block(0x28)
+    if None in (static, cc, dynamic):
+        return False
+    return static[2:4] == b"\xff\xff" and cc[3] == 0x0F and dynamic[0:3] == b"\xff\x0f\x3f"
+
+
 if LOCK:
     print("--lock makes the sticker read-only FOREVER. It can never be rewritten.")
     if input("Type LOCK to continue: ").strip() != "LOCK":
@@ -99,7 +109,7 @@ if check != data:
 print(f"Done. Verified: https://{URL}")
 
 if LOCK:
-    if lock_ntag213():
+    if lock_ntag213() and lock_verified():
         print(f"Locked. Capability container now: {pn532.ntag2xx_read_block(3).hex(' ')}")
     else:
-        sys.exit("Locking failed - keep the sticker still and run the script again with --lock.")
+        sys.exit("Locking failed or incomplete - lock bits could not be verified.")
