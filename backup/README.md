@@ -1,16 +1,18 @@
 # Raspberry Pi Backup Scripts
 
-Scripts für automatische Datensicherung des Raspberry Pi.
+Scripts from the raspberry.tips backup guide:
 
-**Vollständiges Tutorial:** [raspberry.tips → Raspberry Pi Backup erstellen](https://raspberry.tips/raspberrypi-tutorials/raspberry-pi-datensicherung-erstellen)
+- DE: [Raspberry Pi Backup erstellen](https://raspberry.tips/raspberrypi-tutorials/raspberry-pi-datensicherung-erstellen)
+- EN: [How to Back Up a Raspberry Pi](https://raspberry.tips/en/raspberrypi-tutorials/raspberry-pi-backup-guide)
 
-## Dateien
+## Files
 
-- `rpi-clone-setup.sh` – rpi-clone (geerlingguy Fork) installieren
-- `rsync-backup.sh` – automatisches rsync Backup auf USB oder NAS
-- `crontab-example.txt` – Beispiel-Crontab für automatische Backups
+- `rpi-clone-setup.sh` – installs rpi-clone (Jeff Geerling's fork) and prints the common commands
+- `pi-backup.sh` – rsync backup of `/home` and `/etc` to a drive mounted at `/mnt/backup`; skips the run if the drive is not mounted
+- `crontab-example.txt` – cron line for a nightly run
 
-## Wichtig für Bookworm / Pi 5
+## Notes
 
-Das originale rpi-clone (billw2) funktioniert **nicht** korrekt unter Raspberry Pi OS Bookworm.
-Verwendet den **geerlingguy Fork** (in `rpi-clone-setup.sh` enthalten).
+- Format the backup drive as **ext4**. On FAT32/exFAT, rsync loses owners, permissions and symlinks (`/etc/shadow` would become world-readable).
+- `--delete` makes the target a mirror: files deleted on the Pi disappear from the backup on the next run. For several versions, use raspiBackup or shrink-backup (see the guide).
+- Use the maintained rpi-clone fork (geerlingguy); the original (billw2) has not been maintained since 2020.
