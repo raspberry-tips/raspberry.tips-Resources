@@ -1,20 +1,35 @@
-# Nextcloud AIO Docker Compose
-# Tutorial: https://raspberry.tips/raspberrypi-tutorials/nextcloud-raspberry-pi-installieren
+# Nextcloud AIO (All-in-One) on the Raspberry Pi – Docker Compose
+# Tutorial (DE): https://raspberry.tips/server-2/nextcloud-auf-dem-raspberry-pi-installieren-eigene-cloud-einrichten
+# Tutorial (EN): https://raspberry.tips/en/server-2/raspberry-pi-nextcloud-own-cloud-setup
+# Based on the official template: https://github.com/nextcloud/all-in-one/blob/main/compose.yaml
+#
+# Start:  sudo docker compose -f nextcloud.yml up -d
+# Then open https://IP-OF-YOUR-PI:8080 – always via the IP address, never via your domain (HSTS).
+#
+# Running behind your own reverse proxy instead? Remove ports 80 and 8443, set APACHE_PORT
+# (e.g. 11000) and follow https://github.com/nextcloud/all-in-one/blob/main/reverse-proxy.md
+
+name: nextcloud-aio # same compose project as the containers AIO starts by itself
 
 services:
   nextcloud-aio-mastercontainer:
-    image: nextcloud/all-in-one:latest
-    container_name: nextcloud-aio-mastercontainer
+    image: ghcr.io/nextcloud-releases/all-in-one:latest
+    init: true
     restart: always
-    ports:
-      - "8080:8080"
-    environment:
-      APACHE_PORT: 11000
-      # NEXTCLOUD_DATADIR: "/mnt/externe-festplatte/nextcloud"  # Datenpfad anpassen
+    container_name: nextcloud-aio-mastercontainer # do not change, AIO relies on this name
     volumes:
-      - nextcloud_aio_mastercontainer:/mnt/docker-aio-config
+      - nextcloud_aio_mastercontainer:/mnt/docker-aio-config # do not change, the built-in backup relies on it
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    network_mode: bridge
+    ports:
+      - "80:80"     # certificate via ACME http challenge, redirects to Nextcloud
+      - "8080:8080" # AIO interface with self-signed certificate
+      - "8443:8443" # AIO interface with a valid certificate (needs a domain and open ports 80/8443)
+    # environment:
+    #   NEXTCLOUD_DATADIR: /mnt/external-drive/nextcloud # keep your files on another drive – set this before the first installation, never change it later
+
+# Ports 443 (Nextcloud) and 3478 (Talk) are opened later by the containers AIO starts itself.
 
 volumes:
   nextcloud_aio_mastercontainer:
-    name: nextcloud_aio_mastercontainer
+    name: nextcloud_aio_mastercontainer # do not change, the built-in backup relies on it
