@@ -6,7 +6,7 @@
 # Einbindung, Variante A (empfohlen) - Datei nach /config/ legen und in die
 # configuration.yaml eine einzige Zeile eintragen:
 #
-#   rest_command: !include klingel_rest_command.yaml
+#   rest_command: !include klingel-rest-command.yaml
 #
 # Variante B - Inhalt dieser Datei direkt in die configuration.yaml kopieren,
 # dann muss dort einmal "rest_command:" darueberstehen und alles eine Ebene
@@ -19,7 +19,7 @@
 # oder eine DHCP-Reservierung geben, sonst brechen die Aufrufe beim naechsten
 # Lease-Wechsel weg.
 #
-# Nach dem Anlegen: Entwicklerwerkzeuge -> YAML -> "RESTful Commands" neu
+# Nach dem Anlegen: Einstellungen -> Werkzeuge -> YAML -> "RESTful Commands" neu
 # laden. Danach tauchen die Befehle im Automatisierungs-Editor auf.
 #
 # Hinweis zur Authentifizierung: Shelly Gen2 und neuer verlangt Digest-Auth.
@@ -55,7 +55,7 @@ wd_screen_on:
 
 # --- Bildschirm ausschalten -----------------------------------------
 # Optional: Wenn der Naeherungssensor das Panel ohnehin wieder schlafen
-# legt, brauchst du das nicht.
+# legt, braucht ihr das nicht.
 wd_screen_off:
   url: 'http://192.168.x.x/rpc/Ui.Screen.Set?params={"on":false}'
   authentication: digest
@@ -100,7 +100,7 @@ wd_lautstaerke:
 #   username: admin
 #   password: !secret shelly_wd_password
 #
-# Kamera im Vollbild oeffnen - Parameter noch unbekannt. Ruf die Methode
+# Kamera im Vollbild oeffnen - Parameter noch unbekannt. Ruft die Methode
 # einmal ohne Argumente auf, dann nennt das Geraet in der Fehlerantwort das
 # fehlende Argument. Ui.ListAvailable und Ui.GetConfig zeigen, welche
 # Quellen auf dem Display konfiguriert sind.

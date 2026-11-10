@@ -1,0 +1,125 @@
+# =============================================================================
+# Doorbell sensor: Waveshare ESP32-H2-Zero + PC817 optocoupler
+# Connected to Home Assistant via Zigbee (ZHA) - the node doubles as a
+# Zigbee router/repeater.
+#
+# Tutorial: https://raspberry.tips/en/smart-home/make-doorbell-smart-home-assistant-zigbee
+# Tested with ESPHome 2026.7.4 on ESP32-H2 rev1.2
+#
+# IMPORTANT: Zigbee support for the ESP32-H2 has been part of ESPHome core
+#            since ESPHome 2026.5. NO external_components needed any more.
+#
+# Hardware: Waveshare ESP32-H2-Zero
+#   - ESP32-H2FH4S, 4 MB flash, LDO ME6217C33M5G (max. 800 mA)
+#   - USB-C wired straight to the native USB Serial/JTAG -> no fiddling with
+#     the boot button
+#   - Pin-compatible with the ESP32-H2-DevKitM-1 (pick "Espressif
+#     ESP32-H2-DevKit" in the ESPHome wizard)
+#
+# HEADS-UP - the ESP32-H2 has NO Wi-Fi!
+#   No wifi:, no api:, no ota: - that's on purpose, not an oversight.
+#   What that means:
+#     * The device shows as "offline" in the ESPHome dashboard FOR GOOD (normal!)
+#     * Logs only over USB (Web Serial in the install dialog)
+#     * Every config change = plug in the USB cable + flash again
+#     * According to the ESPHome docs, remove the device from ZHA afterwards
+#       and pair it again
+#   -> Finish the config on your desk, ONLY THEN install it in the wall.
+#
+# Pins on the H2-Zero that are taken or off-limits:
+#   GPIO8      strapping (LOG) + WS2812 RGB LED
+#   GPIO9      strapping (BOOT button)
+#   GPIO26/27  USB D- / D+
+#   GPIO23/24  UART0 RX/TX
+#   GPIO2-5    JTAG (MTMS/MTDO/MTCK/MTDI) - usable, but needlessly risky
+#   -> Doorbell input: GPIO12 (a clean GPIO, right-hand pin header)
+#
+# Power: 5 V from the doorbell's indoor unit to the "5V" and "GND" pins.
+#   A Zigbee ROUTER never sleeps (RX is always on) -> ~40-80 mA continuous load.
+#
+# WIRING via a PC817 optocoupler module (4 wires on the module):
+#   Input side:   doorbell signal -> IN1      doorbell ground -> G
+#   Output side:  OUT1            -> GPIO12   G               -> ESP GND
+#   Leave VCC on the output side UNCONNECTED.
+#   REMOVE THE JUMPERS.
+#
+#   Why: the PC817 output is an open collector - it can only pull to ground.
+#   The idle level comes from the ESP's internal pull-up (pullup: true).
+#   No two sources agree on what the jumpers on these no-name boards actually
+#   do (pull-up enable / high-low switch / ground bridge, sometimes
+#   contradicting each other in the same datasheet). With the jumpers removed,
+#   the output is a pure open collector no matter which reading is right -
+#   and with VCC left unconnected, no outside voltage can reach the GPIO.
+#
+#   The LED series resistor is already fitted on these modules (3.6-24 V
+#   input) - do NOT add another one in front of it.
+#
+#   Troubleshooting: if the sensor stays "on" all the time, a jumper is still
+#   pulling the output to ground. Each channel also has a status LED that
+#   lights up when triggered - so you can check the input side without a
+#   multimeter.
+# =============================================================================
+
+esphome:
+  name: doorbell-sensor
+  friendly_name: doorbell-sensor
+
+esp32:
+  variant: esp32h2
+  flash_size: 4MB
+  framework:
+    type: esp-idf
+
+logger:
+  level: INFO
+
+zigbee:
+  id: zb
+  router: true              # <- the repeater switch: router instead of end device
+  power_source: DC_SOURCE   # mains-powered, never sleeps
+  on_join:
+    then:
+      - logger.log: "Joined the Zigbee network"
+
+sensor:
+  # Sign of life - without the ESPHome API the only way to see the node is still there
+  - platform: uptime
+    name: "Uptime"
+    update_interval: 60s
+
+binary_sensor:
+  # The doorbell input. Deliberately included RIGHT AWAY: any later change
+  # means reflashing AND removing + re-pairing the device in ZHA.
+  - platform: gpio
+    id: doorbell_gpio
+    name: "Doorbell"
+    report: force        # REQUIRED with ZHA! Otherwise ZHA throttles reporting
+                         # to 30 s - completely useless for a doorbell.
+    pin:
+      number: GPIO12
+      inverted: true     # the PC817 pulls the pin to GND when the bell is pressed
+      mode:
+        input: true
+        pullup: true     # idle state = HIGH
+    filters:
+      - delayed_on: 30ms   # filter out bounce / spikes
+      - delayed_off: 500ms # PLACEHOLDER - measure on the real signal and adjust
+
+# =============================================================================
+# Test order after flashing:
+#   1. Pair in ZHA (permit join), check the log for "Joined the Zigbee network"
+#   2. Dry run, still without the doorbell and without the optocoupler:
+#      briefly bridge GPIO12 to GND.
+#      >>> ONLY bridge to GROUND. Never put 5 V on a GPIO! <<<
+#      That's exactly what the optocoupler does later: it pulls GPIO12 to GND.
+#      The doorbell's 5 V never reaches the ESP at any point.
+#   3. Only once that switches cleanly in HA, put the PC817 in between
+#   4. Only after that, connect it to the doorbell
+#
+# Remember: the "5V" pin on the board can take 5 V (it feeds the voltage
+# regulator). The GPIOs can NOT - they're 3.3 V logic. That's exactly why
+# the optocoupler is there.
+#
+# Note: Zigbee only transmits the name and state. So a device_class doesn't
+# belong here - set it on the entity in Home Assistant instead.
+# =============================================================================

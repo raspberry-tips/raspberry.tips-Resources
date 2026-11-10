@@ -6,7 +6,7 @@
 # Tutorial: https://raspberry.tips/smart-home/tuerklingel-smart-machen-esp32-zigbee-home-assistant
 # Getestet mit ESPHome 2026.7.4 auf ESP32-H2 rev1.2
 #
-# WICHTIG: Die zigbee-Komponente ist seit Anfang 2026 im ESPHome-CORE.
+# WICHTIG: Zigbee fuer den ESP32-H2 ist seit ESPHome 2026.5 im ESPHome-CORE.
 #          KEIN external_components mehr noetig.
 #
 # Hardware: Waveshare ESP32-H2-Zero
