@@ -1,0 +1,95 @@
+# Doorbell automation for Home Assistant
+# -----------------------------------------------------------------------
+# Companion file for the tutorial:
+# https://raspberry.tips/en/smart-home/make-doorbell-smart-home-assistant-zigbee
+#
+# How it works: the moment the bell rings, a notification without an
+# attachment goes out. Then the wall tablet wakes up and plays a chime,
+# Home Assistant grabs a snapshot at its own pace, and a second notification
+# with the same `tag` replaces the first one - this time with the picture.
+# That way the alert never waits for the camera.
+#
+# Things to change:
+#   binary_sensor.doorbell         -> your doorbell entity
+#   notify.mobile_app_your_phone   -> your notification service
+#   camera.hausture_rtsp           -> your camera (use the local stream entity!)
+#
+# The rest_command definitions for the wall tablet live in
+# doorbell-rest-command.yaml. No wall tablet? Just leave out the three
+# rest_command actions and the browser_mod block.
+# -----------------------------------------------------------------------
+
+alias: Doorbell - camera stream to my phone
+description: Instant alert when the bell rings, the snapshot follows
+triggers:
+  - trigger: state
+    entity_id:
+      - binary_sensor.doorbell
+    to: "on"
+actions:
+  # 1. Straight out - no camera access, no attachment.
+  #    No entity_id and no url/clickAction: either one would make the app
+  #    load something before it shows the notification.
+  - action: notify.mobile_app_your_phone
+    data:
+      title: "🔔 Someone is at the front door"
+      message: "Camera image on its way …"
+      data:
+        tag: doorbell
+        push:
+          interruption-level: time-sensitive
+
+  # 2. Wake the wall tablet and play a chime.
+  #    Set the brightness BEFORE turning the screen on: with auto brightness
+  #    enabled, the panel stays dim otherwise.
+  - action: rest_command.wd_brightness
+  - action: rest_command.wd_screen_on
+  - action: rest_command.wd_ringtone
+    data:
+      id: 1        # 1..number of ringtones stored on the device
+      volume: 8    # 1..maximum volume
+
+  # 3. Snapshot from the local stream entity.
+  #    The cloud entities of vendor integrations often return empty image
+  #    data - and then the notification arrives without a picture.
+  - action: camera.snapshot
+    target:
+      entity_id: camera.hausture_rtsp
+    data:
+      filename: /config/www/doorbell_snapshot.jpg
+
+  # 4. Replaces the first message via the same tag - now with the picture.
+  #    attachment.url instead of image: the iOS app only evaluates
+  #    attachment.url and entity_id, there is no image parser in it. Keep the
+  #    path relative, otherwise the app won't send its credentials along.
+  #    Do NOT set url/uri/clickAction: the app takes the first of these three
+  #    and opens it; "entityId:..." is Android syntax and goes nowhere on
+  #    iOS. Without these keys it falls back to entity_id and opens the
+  #    camera view.
+  - action: notify.mobile_app_your_phone
+    data:
+      title: "🔔 Someone is at the front door"
+      message: "Tap for the live stream"
+      data:
+        tag: doorbell
+        attachment:
+          url: /local/doorbell_snapshot.jpg
+        entity_id: camera.hausture_rtsp
+        push:
+          sound: none
+          interruption-level: time-sensitive
+
+  # 5. Popup on the wall tablet. The display is awake now, but the web
+  #    interface needs a moment to re-establish its connection.
+  - delay:
+      milliseconds: 500
+  - action: browser_mod.popup
+    data:
+      title: Front door
+      timeout: 30000
+      content:
+        type: picture-glance
+        camera_image: camera.hausture_rtsp
+        camera_view: live
+        entities: []
+mode: single

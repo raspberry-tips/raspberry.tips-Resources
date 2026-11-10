@@ -1,0 +1,111 @@
+# rest_command definitions for the Shelly Wall Display X2i
+# -----------------------------------------------------------------------
+# Companion file for the tutorial:
+# https://raspberry.tips/en/smart-home/make-doorbell-smart-home-assistant-zigbee
+#
+# Option A (recommended) - put this file into /config/ and add a single line
+# to your configuration.yaml:
+#
+#   rest_command: !include doorbell-rest-command.yaml
+#
+# Option B - paste the contents of this file straight into configuration.yaml.
+# In that case "rest_command:" has to sit above it once, and everything
+# below moves one level of indentation to the right.
+#
+# Add this to your secrets.yaml:
+#   shelly_wd_password: YOUR_NEW_PASSWORD
+#
+# Replace the IP address everywhere below. Give the Wall Display a static IP
+# or a DHCP reservation first, otherwise the calls break the next time its
+# lease changes.
+#
+# Once added: Settings -> Tools -> YAML -> reload "RESTful Commands". After
+# that the commands show up in the automation editor.
+#
+# A note on authentication: Shelly Gen2 and newer require digest auth.
+# rest_command handles that with "authentication: digest" - there's no need
+# for a detour through shell_command and curl.
+# =====================================================================
+
+# --- Turn the brightness up -----------------------------------------
+# Always call this BEFORE wd_screen_on: with auto brightness enabled, the
+# panel otherwise gets stuck at around 37 percent after switching on.
+#
+# NOTE: This call goes out as JSON-RPC via POST to /rpc, NOT as a GET query.
+# The reason: the parameter contains nested JSON, and the GET variant chokes
+# on it (and the failure looks like an authentication error).
+# The simple calls further down work fine as GET.
+# GET alternative if you prefer - but then percent-encode EVERYTHING:
+#   http://192.168.x.x/rpc/Ui.SetConfig?config=%7B%22brightness%22%3A%7B%22level%22%3A100%2C%22auto%22%3Afalse%7D%7D
+wd_brightness:
+  url: 'http://192.168.x.x/rpc'
+  method: post
+  content_type: 'application/json'
+  payload: '{"id":1,"src":"ha","method":"Ui.SetConfig","params":{"config":{"brightness":{"level":100,"auto":false}}}}'
+  authentication: digest
+  username: admin
+  password: !secret shelly_wd_password
+
+# --- Turn the screen on ---------------------------------------------
+wd_screen_on:
+  url: 'http://192.168.x.x/rpc/Ui.Screen.Set?params={"on":true}'
+  authentication: digest
+  username: admin
+  password: !secret shelly_wd_password
+
+# --- Turn the screen off --------------------------------------------
+# Optional: if the proximity sensor puts the panel back to sleep anyway,
+# you won't need this one.
+wd_screen_off:
+  url: 'http://192.168.x.x/rpc/Ui.Screen.Set?params={"on":false}'
+  authentication: digest
+  username: admin
+  password: !secret shelly_wd_password
+
+# --- Play a ringtone ------------------------------------------------
+# Call it with:
+#   action: rest_command.wd_ringtone
+#   data:
+#     id: 1        # 1..number of ringtones stored on the device
+#     volume: 8    # 1..maximum volume
+wd_ringtone:
+  url: 'http://192.168.x.x/rpc/Media.MediaPlayer.PlayRingtone?id={{ id }}&volume={{ volume }}'
+  authentication: digest
+  username: admin
+  password: !secret shelly_wd_password
+
+# --- Set the volume -------------------------------------------------
+# Call it with data: { volume: 5 }
+wd_volume:
+  url: 'http://192.168.x.x/rpc/Media.SetVolume?volume={{ volume }}'
+  authentication: digest
+  username: admin
+  password: !secret shelly_wd_password
+
+# =====================================================================
+# More handy commands - uncomment as needed
+# =====================================================================
+#
+# Tap a point on the touchscreen (x and y each 0..719):
+# wd_tap:
+#   url: 'http://192.168.x.x/rpc/Ui.Tap?x={{ x }}&y={{ y }}'
+#   authentication: digest
+#   username: admin
+#   password: !secret shelly_wd_password
+#
+# Restart the interface if the dashboard has frozen:
+# wd_restart:
+#   url: 'http://192.168.x.x/rpc/Sys.RestartApplication'
+#   authentication: digest
+#   username: admin
+#   password: !secret shelly_wd_password
+#
+# Open a camera full screen - parameters still unknown. Call the method once
+# without arguments and the device names the missing argument in its error
+# response. Ui.ListAvailable and Ui.GetConfig show which sources are set up
+# on the display.
+# wd_camera_fullscreen:
+#   url: 'http://192.168.x.x/rpc/Ui.OpenCameraFullscreen'
+#   authentication: digest
+#   username: admin
+#   password: !secret shelly_wd_password
