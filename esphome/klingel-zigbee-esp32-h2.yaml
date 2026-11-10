@@ -1,27 +1,27 @@
 # =============================================================================
 # Klingel-Sensor: Waveshare ESP32-H2-Zero + PC817-Optokoppler
-# Anbindung an Home Assistant via Zigbee (ZHA) - der Node laeuft gleichzeitig
+# Anbindung an Home Assistant via Zigbee (ZHA) - der Node läuft gleichzeitig
 # als Zigbee-Router/Repeater.
 #
 # Tutorial: https://raspberry.tips/smart-home/tuerklingel-smart-machen-esp32-zigbee-home-assistant
 # Getestet mit ESPHome 2026.7.4 auf ESP32-H2 rev1.2
 #
-# WICHTIG: Zigbee fuer den ESP32-H2 ist seit ESPHome 2026.5 im ESPHome-CORE.
-#          KEIN external_components mehr noetig.
+# WICHTIG: Zigbee für den ESP32-H2 ist seit ESPHome 2026.5 im ESPHome-CORE.
+#          KEIN external_components mehr nötig.
 #
 # Hardware: Waveshare ESP32-H2-Zero
 #   - ESP32-H2FH4S, 4 MB Flash, LDO ME6217C33M5G (max. 800 mA)
-#   - USB-C direkt am nativen USB-Serial/JTAG -> kein Boot-Button-Gedruecke
+#   - USB-C direkt am nativen USB-Serial/JTAG -> kein Boot-Button-Gedrücke
 #   - Pin-kompatibel zum ESP32-H2-DevKitM-1 (im ESPHome-Wizard "Espressif
-#     ESP32-H2-DevKit" auswaehlen)
+#     ESP32-H2-DevKit" auswählen)
 #
 # ACHTUNG - der ESP32-H2 hat KEIN WLAN!
 #   Kein wifi:, kein api:, kein ota: - das ist Absicht, nicht vergessen.
 #   Folgen:
-#     * Geraet steht im ESPHome-Dashboard DAUERHAFT auf "offline" (normal!)
-#     * Logs nur ueber USB (Web Serial im Installations-Dialog)
-#     * Jede Config-Aenderung = USB-Kabel dran + neu flashen
-#     * Laut ESPHome-Doc danach Geraet in ZHA loeschen und neu anlernen
+#     * Gerät steht im ESPHome-Dashboard DAUERHAFT auf "offline" (normal!)
+#     * Logs nur über USB (Web Serial im Installations-Dialog)
+#     * Jede Config-Änderung = USB-Kabel dran + neu flashen
+#     * Laut ESPHome-Doc danach Gerät in ZHA löschen und neu anlernen
 #   -> Config auf dem Schreibtisch fertigstellen, ERST DANN einbauen.
 #
 # Belegte / tabu Pins am H2-Zero:
@@ -29,13 +29,13 @@
 #   GPIO9      Strapping (BOOT-Taster)
 #   GPIO26/27  USB D- / D+
 #   GPIO23/24  UART0 RX/TX
-#   GPIO2-5    JTAG (MTMS/MTDO/MTCK/MTDI) - nutzbar, aber unnoetig riskant
+#   GPIO2-5    JTAG (MTMS/MTDO/MTCK/MTDI) - nutzbar, aber unnötig riskant
 #   -> Klingel-Eingang: GPIO12 (sauberer GPIO, rechte Stiftleiste)
 #
 # Stromversorgung: 5 V aus dem Klingel-Innenteil auf Pin "5V" + "GND".
-#   Ein Zigbee-ROUTER schlaeft nie (RX dauerhaft an) -> ~40-80 mA Dauerlast.
+#   Ein Zigbee-ROUTER schläft nie (RX dauerhaft an) -> ~40-80 mA Dauerlast.
 #
-# ANSCHLUSS ueber ein PC817-Optokopplermodul (4 Draehte am Modul):
+# ANSCHLUSS über ein PC817-Optokopplermodul (4 Drähte am Modul):
 #   Eingangsseite:  Klingel-Signal -> IN1        Klingel-Masse -> G
 #   Ausgangsseite:  OUT1           -> GPIO12     G             -> GND des ESP
 #   VCC der Ausgangsseite bleibt UNBESCHALTET.
@@ -44,17 +44,17 @@
 #   Warum: Der PC817-Ausgang ist ein Open Collector - er kann nur gegen Masse
 #   ziehen. Den Ruhepegel macht der interne Pull-up des ESP (pullup: true).
 #   Was die Jumper auf diesen No-Name-Boards genau tun, beschreibt keine zwei
-#   Quellen gleich (Pull-up-Freigabe / High-Low-Umschaltung / Masse-Bruecke,
-#   teils widerspruechlich im selben Datenblatt). Abgezogen ist der Ausgang in
+#   Quellen gleich (Pull-up-Freigabe / High-Low-Umschaltung / Masse-Brücke,
+#   teils widersprüchlich im selben Datenblatt). Abgezogen ist der Ausgang in
 #   jeder Lesart ein reiner Open Collector - und ohne beschaltetes VCC kann
-#   ueberhaupt keine Fremdspannung an den GPIO gelangen.
+#   überhaupt keine Fremdspannung an den GPIO gelangen.
 #
-#   Der Vorwiderstand fuer die LED ist auf solchen Modulen (Eingang 3,6-24 V)
-#   bereits bestueckt - KEINEN zusaetzlichen davorsetzen.
+#   Der Vorwiderstand für die LED ist auf solchen Modulen (Eingang 3,6-24 V)
+#   bereits bestückt - KEINEN zusätzlichen davorsetzen.
 #
 #   Diagnose: Bleibt der Sensor dauerhaft "on", zieht noch ein Jumper den
-#   Ausgang auf Masse. Jeder Kanal hat ausserdem eine Status-LED, die beim
-#   Ausloesen leuchtet - damit sieht man die Eingangsseite ohne Messgeraet.
+#   Ausgang auf Masse. Jeder Kanal hat außerdem eine Status-LED, die beim
+#   Auslösen leuchtet - damit sieht man die Eingangsseite ohne Messgerät.
 # =============================================================================
 
 esphome:
@@ -73,7 +73,7 @@ logger:
 zigbee:
   id: zb
   router: true              # <- der Repeater-Schalter: Router statt End Device
-  power_source: DC_SOURCE   # netzbetrieben, schlaeft nicht
+  power_source: DC_SOURCE   # netzbetrieben, schläft nicht
   on_join:
     then:
       - logger.log: "Zigbee-Netz beigetreten"
@@ -85,13 +85,13 @@ sensor:
     update_interval: 60s
 
 binary_sensor:
-  # Der Klingel-Eingang. Bewusst SOFORT mit drin: Jede spaetere Aenderung
-  # bedeutet reflashen UND das Geraet in ZHA loeschen + neu anlernen.
+  # Der Klingel-Eingang. Bewusst SOFORT mit drin: Jede spätere Änderung
+  # bedeutet reflashen UND das Gerät in ZHA löschen + neu anlernen.
   - platform: gpio
     id: klingel_gpio
     name: "Klingel"
     report: force        # PFLICHT bei ZHA! Sonst drosselt ZHA das Reporting
-                         # auf 30 s - fuer eine Klingel voellig unbrauchbar.
+                         # auf 30 s - für eine Klingel völlig unbrauchbar.
     pin:
       number: GPIO12
       inverted: true     # PC817 zieht den Pin bei Klingeldruck auf GND
@@ -99,25 +99,25 @@ binary_sensor:
         input: true
         pullup: true     # Ruhezustand = HIGH
     filters:
-      - delayed_on: 30ms   # Prellen / Stoerimpulse ausfiltern
+      - delayed_on: 30ms   # Prellen / Störimpulse ausfiltern
       - delayed_off: 500ms # PLATZHALTER - am echten Signal nachmessen und anpassen
 
 # =============================================================================
 # Test-Reihenfolge nach dem Flashen:
-#   1. In ZHA anlernen (Permit Join), Log auf "Zigbee-Netz beigetreten" pruefen
+#   1. In ZHA anlernen (Permit Join), Log auf "Zigbee-Netz beigetreten" prüfen
 #   2. Trockentest, noch ohne Klingel und ohne Optokoppler:
-#      GPIO12 kurz mit GND bruecken.
-#      >>> NUR gegen MASSE bruecken. Niemals 5 V an einen GPIO! <<<
-#      Genau das macht der Optokoppler spaeter auch: Er zieht GPIO12 auf GND.
+#      GPIO12 kurz mit GND brücken.
+#      >>> NUR gegen MASSE brücken. Niemals 5 V an einen GPIO! <<<
+#      Genau das macht der Optokoppler später auch: Er zieht GPIO12 auf GND.
 #      Die 5 V der Klingel erreichen den ESP zu keinem Zeitpunkt.
-#   3. Erst wenn das in HA sauber schaltet, den PC817 dazwischenhaengen
+#   3. Erst wenn das in HA sauber schaltet, den PC817 dazwischenhängen
 #   4. Erst danach an die Klingel
 #
-# Merke: Der Pin "5V" am Board darf 5 V sehen (er fuehrt auf den Spannungs-
-# regler). Die GPIOs duerfen es NICHT - die sind 3,3-V-Logik. Genau deshalb
+# Merke: Der Pin "5V" am Board darf 5 V sehen (er führt auf den Spannungs-
+# regler). Die GPIOs dürfen es NICHT - die sind 3,3-V-Logik. Genau deshalb
 # der Optokoppler.
 #
-# Hinweis: Ueber Zigbee werden nur Name und Zustand uebertragen. Ein
-# device_class gehoert deshalb nicht hierher, sondern wird an der Entity
+# Hinweis: Über Zigbee werden nur Name und Zustand übertragen. Ein
+# device_class gehört deshalb nicht hierher, sondern wird an der Entity
 # in Home Assistant gesetzt.
 # =============================================================================
