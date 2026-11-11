@@ -1,0 +1,63 @@
+# BME280 (temperature, humidity, pressure) on an ESP32 WROOM-32 board
+# Tutorial: https://raspberry.tips/en/raspberrypi-tutorials/esphome-raspberry-pi-smart-home-sensors
+# German:   https://raspberry.tips/raspberrypi-tutorials/esphome-raspberry-pi-sensoren
+# English entity names; the German versions are one folder up.
+#
+# Base part = what the ESPHome Device Builder generates for the board
+# "ESP32 DevKit V1", plus "encryption:" under "ota:". The catalog entry describes
+# a micro-USB board, but it also fits WROOM-32 boards with USB-C: same chip and
+# GPIO numbers. The pin positions on the header can differ, so go by the labels
+# printed on the board. Validated with "esphome config" (ESPHome 2026.10.2).
+#
+# Wiring: VCC to 3V3, GND to GND, SCL to GPIO22, SDA to GPIO21.
+# 6-pin modules only: also CSB to 3V3 (I2C mode) and SDO to GND (address 0x76).
+#
+# secrets.yaml needs: wifi_ssid, wifi_password, api_key, fallback_password
+# (the Device Builder writes the API key and the hotspot password directly
+# into the file instead - both ways work)
+
+esphome:
+  name: living-room
+  friendly_name: Living room
+
+esp32:
+  variant: esp32
+  flash_size: 4MB
+  framework:
+    type: esp-idf
+
+logger:
+
+api:
+  encryption:
+    key: !secret api_key
+
+ota:
+  - platform: esphome
+    encryption:   # require encrypted OTA updates (uses the API key above)
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ssid: "Living room Fallback Hotspot"
+    password: !secret fallback_password
+
+captive_portal:
+
+i2c:
+  sda: GPIO21
+  scl: GPIO22
+  scan: true
+
+sensor:
+  - platform: bme280_i2c
+    temperature:
+      name: "Temperature"
+      oversampling: 16x
+    pressure:
+      name: "Pressure"
+    humidity:
+      name: "Humidity"
+    address: 0x76   # some modules use 0x77, check the log ("scan: true")
+    update_interval: 60s

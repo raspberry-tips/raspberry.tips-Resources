@@ -1,0 +1,22 @@
+# Window contact with a wired reed switch (e.g. MC-38) on GPIO4
+# Add this block to the base config of your device (see bme280-temperature-sensor.yaml).
+# Wiring: one wire to GPIO4, the other to GND. The internal pull-up keeps the input high.
+#
+# Contact type: a switch that closes when the magnet is near pulls GPIO4 to GND
+# -> "off" = closed, which is what Home Assistant expects for device_class window.
+# If Home Assistant shows "Open" while the window is shut, your switch opens
+# when the magnet is near: uncomment "inverted: true".
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO4
+      mode:
+        input: true
+        pullup: true
+      # inverted: true
+    name: "Window"
+    device_class: window
+    filters:
+      - delayed_on: 10ms
+      - delayed_off: 10ms

@@ -1,14 +1,31 @@
+# BME280 (temperature, humidity, pressure) on an ESP32 WROOM-32 board
+# Tutorial: https://raspberry.tips/raspberrypi-tutorials/esphome-raspberry-pi-sensoren
+# English:  https://raspberry.tips/en/raspberrypi-tutorials/esphome-raspberry-pi-smart-home-sensors
+#
+# Base part = what the ESPHome Device Builder generates for the board
+# "ESP32 DevKit V1", plus "encryption:" under "ota:". The catalog entry describes
+# a micro-USB board, but it also fits WROOM-32 boards with USB-C: same chip and
+# GPIO numbers. The pin positions on the header can differ, so go by the labels
+# printed on the board. Validated with "esphome config" (ESPHome 2026.10.2).
+#
+# Wiring: VCC to 3V3, GND to GND, SCL to GPIO22, SDA to GPIO21.
+# 6-pin modules only: also CSB to 3V3 (I2C mode) and SDO to GND (address 0x76).
+#
+# secrets.yaml needs: wifi_ssid, wifi_password, api_key, fallback_password
+# (the Device Builder writes the API key and the hotspot password directly
+# into the file instead - both ways work)
+
 esphome:
-  name: wohnzimmer-sensor
+  name: wohnzimmer
+  friendly_name: Wohnzimmer
 
 esp32:
-  board: esp32dev
+  variant: esp32
+  flash_size: 4MB
   framework:
-    type: arduino
+    type: esp-idf
 
-wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
+logger:
 
 api:
   encryption:
@@ -16,9 +33,16 @@ api:
 
 ota:
   - platform: esphome
-    password: !secret ota_password
+    encryption:   # require encrypted OTA updates (uses the API key above)
 
-logger:
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ssid: "Wohnzimmer Fallback Hotspot"
+    password: !secret fallback_password
+
+captive_portal:
 
 i2c:
   sda: GPIO21
@@ -28,11 +52,11 @@ i2c:
 sensor:
   - platform: bme280_i2c
     temperature:
-      name: "Wohnzimmer Temperatur"
+      name: "Temperatur"
       oversampling: 16x
     pressure:
-      name: "Wohnzimmer Luftdruck"
+      name: "Luftdruck"
     humidity:
-      name: "Wohnzimmer Luftfeuchtigkeit"
-    address: 0x76
+      name: "Luftfeuchtigkeit"
+    address: 0x76   # some modules use 0x77, check the log ("scan: true")
     update_interval: 60s
