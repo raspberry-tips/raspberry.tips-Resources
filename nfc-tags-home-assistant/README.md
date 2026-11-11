@@ -1,6 +1,6 @@
 # NFC-Tags in Home Assistant: Erinnern, bis es erledigt ist
 
-Script und Konfiguration zum Artikel [NFC-Tags in Home Assistant: Der Cent-Trick gegen Vergessen](https://raspberry.tips/smart-home/nfc-tags-in-home-assistant-erinnerung) auf raspberry.tips (English: [Home Assistant NFC Tags: Reminders That Stop When It's Done](https://raspberry.tips/en/smart-home/home-assistant-nfc-tags-reminders)). Die englische Fassung nutzt die Kennungen `dishwasher`/`pill` und englische Helfernamen, die Dateien hier entsprechen der deutschen. Ein NFC-Sticker an Spülmaschine oder Tablettenbox beendet eine Erinnerung von Home Assistant erst, wenn er mit dem Handy gescannt wird.
+Script und Konfiguration zum Artikel [NFC-Tags in Home Assistant: Der Cent-Trick gegen Vergessen](https://raspberry.tips/smart-home/nfc-tags-in-home-assistant-erinnerung) auf raspberry.tips (English: [Home Assistant NFC Tags: Reminders That Stop When It's Done](https://raspberry.tips/en/smart-home/home-assistant-nfc-tags-reminders)). Die Dateien hier entsprechen der deutschen Fassung; die englischen (Kennungen `dishwasher`/`pill`, englische Helfernamen) liegen in [`en/`](en/). Ein NFC-Sticker an Spülmaschine oder Tablettenbox beendet eine Erinnerung von Home Assistant erst, wenn er mit dem Handy gescannt wird.
 
 ## Dateien
 
@@ -28,7 +28,7 @@ Sticker flach und mittig auf die Antenne legen. Während des Schreibens nicht mi
 ### Sperren
 
 ```bash
-python nfc_ha_tag.py spuelmaschine --lock
+python nfc_ha_tag.py haustuer --lock
 ```
 
 **Endgültig:** Ein gesperrter Sticker lässt sich nie wieder beschreiben, Lesen und Scannen funktionieren weiter. Das Script fragt vorher nach (`LOCK` eintippen), schreibt und prüft die Adresse, setzt erst dann die Lock-Bits (NTAG213-Datenblatt, Abschnitte 8.5.2–8.5.4) und liest sie zur Kontrolle zurück. Nur für NTAG213.
@@ -45,7 +45,7 @@ YAML in eine neue Automation einfügen (Drei-Punkte-Menü → In YAML bearbeiten
 
 - `notify.mobile_app_euer_iphone` durch den Benachrichtigungsdienst eures Handys ersetzen (jedes Vorkommen)
 - `tag_id` auf die Kennung eures Stickers setzen
-- `url: /dashboard-erinnerungen/0` passt zu einem Dashboard mit der Adresse `dashboard-erinnerungen`
+- `url: /dashboard-erinnerungen/0` passt zu einem Dashboard mit der Adresse `dashboard-erinnerungen`; ohne Dashboard die Zeile mit `url` löschen
 
 Die Spülmaschinen-Automation erwartet, dass eure Fertigmeldung den Helfer einschaltet, z. B. die aus [Spülmaschine oder Waschmaschine fertig?](https://raspberry.tips/smart-home/spuelmaschine-waschmaschine-fertig-benachrichtigung-home-assistant).
 
