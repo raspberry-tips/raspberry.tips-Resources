@@ -1,7 +1,17 @@
+# Motion sensor HC-SR501 (PIR) on GPIO16 of an ESP32 WROOM-32 board
+# Add this block to the base config of your device (see bme280-temperatur-sensor.yaml).
+# Wiring: VCC to 5V (VIN on some boards), GND to GND, OUT to GPIO16.
+# GPIO16 is free on WROOM-32 boards; WROVER boards use it internally.
+#
+# Because the base config sets friendly_name, a short name is enough:
+# Home Assistant assigns "Bewegung" to the device (e.g. "Wohnzimmer").
+# Reed switch and motion sensor on the same board: keep ONE "binary_sensor:"
+# key and list both sensors under it.
+
 binary_sensor:
   - platform: gpio
     pin: GPIO16
-    name: "Flur Bewegung"
+    name: "Bewegung"
     device_class: motion
     filters:
-      - delayed_off: 30s
+      - delayed_off: 30s   # stays "on" for 30 s after the last motion
