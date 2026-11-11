@@ -1,0 +1,61 @@
+alias: Dishwasher unload – reminder
+description: Reminds every 30 minutes until the NFC sticker on the dishwasher is scanned.
+mode: queued
+triggers:
+  - trigger: state
+    entity_id: input_boolean.dishwasher_unload
+    to: "on"
+    id: remind
+  - trigger: time_pattern
+    minutes: "/30"
+    id: remind
+  - trigger: tag
+    tag_id: dishwasher
+    id: scanned
+actions:
+  - choose:
+      - alias: Remind while not unloaded
+        conditions:
+          - condition: trigger
+            id: remind
+          - condition: state
+            entity_id: input_boolean.dishwasher_unload
+            state: "on"
+          - condition: time
+            after: "07:00:00"
+            before: "22:00:00"
+        sequence:
+          - action: notify.mobile_app_your_iphone
+            data:
+              title: Unload the dishwasher
+              message: The dishwasher is done. Scan the sticker once it's empty.
+              data:
+                tag: dishwasher
+                url: /dashboard-reminders/0
+      - alias: Sticker scanned
+        conditions:
+          - condition: trigger
+            id: scanned
+        sequence:
+          - if:
+              - condition: state
+                entity_id: input_boolean.dishwasher_unload
+                state: "on"
+            then:
+              - action: input_boolean.turn_off
+                target:
+                  entity_id: input_boolean.dishwasher_unload
+              - action: notify.mobile_app_your_iphone
+                data:
+                  message: clear_notification
+                  data:
+                    tag: dishwasher
+              - action: notify.mobile_app_your_iphone
+                data:
+                  title: ✓ Done
+                  message: Dishwasher marked as unloaded.
+            else:
+              - action: notify.mobile_app_your_iphone
+                data:
+                  title: Nothing to do
+                  message: The dishwasher was already marked as unloaded.

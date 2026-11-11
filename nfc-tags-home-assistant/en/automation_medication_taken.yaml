@@ -1,0 +1,77 @@
+alias: Medication taken – reminder
+description: Due from 3 am, reminds every 30 minutes from 8 am until scanned. A second scan shows when it was taken.
+mode: queued
+triggers:
+  - trigger: time
+    at: "03:00:00"
+    id: start
+  - trigger: state
+    entity_id: input_boolean.take_pill
+    to: "on"
+    id: remind
+  - trigger: time_pattern
+    minutes: "/30"
+    id: remind
+  - trigger: tag
+    tag_id: pill
+    id: scanned
+actions:
+  - choose:
+      - alias: New day
+        conditions:
+          - condition: trigger
+            id: start
+        sequence:
+          - action: input_boolean.turn_on
+            target:
+              entity_id: input_boolean.take_pill
+      - alias: Remind while not taken
+        conditions:
+          - condition: trigger
+            id: remind
+          - condition: state
+            entity_id: input_boolean.take_pill
+            state: "on"
+          - condition: time
+            after: "08:00:00"
+            before: "22:00:00"
+        sequence:
+          - action: notify.mobile_app_your_iphone
+            data:
+              title: Take your medication
+              message: Today's dose is still due. Scan the sticker on the pill organiser once you've taken it.
+              data:
+                tag: pill
+                url: /dashboard-reminders/0
+      - alias: Sticker scanned
+        conditions:
+          - condition: trigger
+            id: scanned
+        sequence:
+          - if:
+              - condition: state
+                entity_id: input_boolean.take_pill
+                state: "on"
+            then:
+              - action: input_boolean.turn_off
+                target:
+                  entity_id: input_boolean.take_pill
+              - action: input_datetime.set_datetime
+                target:
+                  entity_id: input_datetime.pill_last_taken
+                data:
+                  datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
+              - action: notify.mobile_app_your_iphone
+                data:
+                  message: clear_notification
+                  data:
+                    tag: pill
+              - action: notify.mobile_app_your_iphone
+                data:
+                  title: ✓ Done
+                  message: "Marked as taken at {{ now().strftime('%H:%M') }}."
+            else:
+              - action: notify.mobile_app_your_iphone
+                data:
+                  title: Already done
+                  message: "Already taken on {{ as_timestamp(states('input_datetime.pill_last_taken')) | timestamp_custom('%d %b at %H:%M') }}."

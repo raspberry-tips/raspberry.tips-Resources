@@ -1,0 +1,20 @@
+type: vertical-stack
+cards:
+  - type: tile
+    entity: input_boolean.take_pill
+    name: Medication – still due
+    icon: mdi:pill
+    color: red
+    state_content: last_changed
+    tap_action:
+      action: none
+    visibility:
+      - condition: state
+        entity: input_boolean.take_pill
+        state: "on"
+  - type: tile
+    entity: input_datetime.pill_last_taken
+    name: Medication last taken
+    icon: mdi:pill-multiple
+    tap_action:
+      action: none

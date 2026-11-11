@@ -1,0 +1,25 @@
+type: vertical-stack
+cards:
+  - type: tile
+    entity: input_boolean.dishwasher_unload
+    name: Dishwasher – needs unloading
+    icon: mdi:dishwasher-alert
+    color: red
+    state_content: last_changed
+    tap_action:
+      action: none
+    visibility:
+      - condition: state
+        entity: input_boolean.dishwasher_unload
+        state: "on"
+  - type: tile
+    entity: input_boolean.dishwasher_unload
+    name: Dishwasher unloaded
+    icon: mdi:dishwasher
+    state_content: last_changed
+    tap_action:
+      action: none
+    visibility:
+      - condition: state
+        entity: input_boolean.dishwasher_unload
+        state: "off"
