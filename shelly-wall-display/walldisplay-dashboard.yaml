@@ -59,305 +59,305 @@ views:
             features:
               - type: cover-open-close
             tap_action:
-              action: perform-action
-              perform_action: browser_mod.popup
-              target: {}
-              data:
-                title: Wohnzimmer Fenster Rollladen
-                content:
-                  type: vertical-stack
-                  cards:
-                    - type: button
-                      name: Auf
-                      icon: mdi:arrow-up-bold
-                      icon_height: 48px
-                      tap_action:
-                        action: perform-action
-                        perform_action: cover.open_cover
-                        target:
-                          entity_id: cover.wohnzimmer_fenster_rollladen
-                    - type: button
-                      name: Stopp
-                      icon: mdi:stop
-                      icon_height: 48px
-                      tap_action:
-                        action: perform-action
-                        perform_action: cover.stop_cover
-                        target:
-                          entity_id: cover.wohnzimmer_fenster_rollladen
-                    - type: button
-                      name: Zu
-                      icon: mdi:arrow-down-bold
-                      icon_height: 48px
-                      tap_action:
-                        action: perform-action
-                        perform_action: cover.close_cover
-                        target:
-                          entity_id: cover.wohnzimmer_fenster_rollladen
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                data:
+                  title: Wohnzimmer Fenster Rollladen
+                  content:
+                    type: vertical-stack
+                    cards:
+                      - type: button
+                        name: Auf
+                        icon: mdi:arrow-up-bold
+                        icon_height: 48px
+                        tap_action:
+                          action: perform-action
+                          perform_action: cover.open_cover
+                          target:
+                            entity_id: cover.wohnzimmer_fenster_rollladen
+                      - type: button
+                        name: Stopp
+                        icon: mdi:stop
+                        icon_height: 48px
+                        tap_action:
+                          action: perform-action
+                          perform_action: cover.stop_cover
+                          target:
+                            entity_id: cover.wohnzimmer_fenster_rollladen
+                      - type: button
+                        name: Zu
+                        icon: mdi:arrow-down-bold
+                        icon_height: 48px
+                        tap_action:
+                          action: perform-action
+                          perform_action: cover.close_cover
+                          target:
+                            entity_id: cover.wohnzimmer_fenster_rollladen
             icon_tap_action:
-              action: perform-action
-              perform_action: browser_mod.popup
-              target: {}
-              data:
-                title: Wohnzimmer Fenster Rollladen
-                content:
-                  type: vertical-stack
-                  cards:
-                    - type: button
-                      name: Auf
-                      icon: mdi:arrow-up-bold
-                      icon_height: 48px
-                      tap_action:
-                        action: perform-action
-                        perform_action: cover.open_cover
-                        target:
-                          entity_id: cover.wohnzimmer_fenster_rollladen
-                    - type: button
-                      name: Stopp
-                      icon: mdi:stop
-                      icon_height: 48px
-                      tap_action:
-                        action: perform-action
-                        perform_action: cover.stop_cover
-                        target:
-                          entity_id: cover.wohnzimmer_fenster_rollladen
-                    - type: button
-                      name: Zu
-                      icon: mdi:arrow-down-bold
-                      icon_height: 48px
-                      tap_action:
-                        action: perform-action
-                        perform_action: cover.close_cover
-                        target:
-                          entity_id: cover.wohnzimmer_fenster_rollladen
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                data:
+                  title: Wohnzimmer Fenster Rollladen
+                  content:
+                    type: vertical-stack
+                    cards:
+                      - type: button
+                        name: Auf
+                        icon: mdi:arrow-up-bold
+                        icon_height: 48px
+                        tap_action:
+                          action: perform-action
+                          perform_action: cover.open_cover
+                          target:
+                            entity_id: cover.wohnzimmer_fenster_rollladen
+                      - type: button
+                        name: Stopp
+                        icon: mdi:stop
+                        icon_height: 48px
+                        tap_action:
+                          action: perform-action
+                          perform_action: cover.stop_cover
+                          target:
+                            entity_id: cover.wohnzimmer_fenster_rollladen
+                      - type: button
+                        name: Zu
+                        icon: mdi:arrow-down-bold
+                        icon_height: 48px
+                        tap_action:
+                          action: perform-action
+                          perform_action: cover.close_cover
+                          target:
+                            entity_id: cover.wohnzimmer_fenster_rollladen
           - type: tile
             entity: cover.wohnzimmer_ture_rollladen
             features:
               - type: cover-open-close
             tap_action:
-              action: perform-action
-              perform_action: browser_mod.popup
-              target: {}
-              data:
-                title: Wohnzimmer Türe Rollladen
-                content:
-                  type: vertical-stack
-                  cards:
-                    - type: button
-                      name: Auf
-                      icon: mdi:arrow-up-bold
-                      icon_height: 48px
-                      tap_action:
-                        action: perform-action
-                        perform_action: cover.open_cover
-                        target:
-                          entity_id: cover.wohnzimmer_ture_rollladen
-                    - type: button
-                      name: Stopp
-                      icon: mdi:stop
-                      icon_height: 48px
-                      tap_action:
-                        action: perform-action
-                        perform_action: cover.stop_cover
-                        target:
-                          entity_id: cover.wohnzimmer_ture_rollladen
-                    - type: button
-                      name: Zu
-                      icon: mdi:arrow-down-bold
-                      icon_height: 48px
-                      tap_action:
-                        action: perform-action
-                        perform_action: cover.close_cover
-                        target:
-                          entity_id: cover.wohnzimmer_ture_rollladen
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                data:
+                  title: Wohnzimmer Türe Rollladen
+                  content:
+                    type: vertical-stack
+                    cards:
+                      - type: button
+                        name: Auf
+                        icon: mdi:arrow-up-bold
+                        icon_height: 48px
+                        tap_action:
+                          action: perform-action
+                          perform_action: cover.open_cover
+                          target:
+                            entity_id: cover.wohnzimmer_ture_rollladen
+                      - type: button
+                        name: Stopp
+                        icon: mdi:stop
+                        icon_height: 48px
+                        tap_action:
+                          action: perform-action
+                          perform_action: cover.stop_cover
+                          target:
+                            entity_id: cover.wohnzimmer_ture_rollladen
+                      - type: button
+                        name: Zu
+                        icon: mdi:arrow-down-bold
+                        icon_height: 48px
+                        tap_action:
+                          action: perform-action
+                          perform_action: cover.close_cover
+                          target:
+                            entity_id: cover.wohnzimmer_ture_rollladen
             icon_tap_action:
-              action: perform-action
-              perform_action: browser_mod.popup
-              target: {}
-              data:
-                title: Wohnzimmer Türe Rollladen
-                content:
-                  type: vertical-stack
-                  cards:
-                    - type: button
-                      name: Auf
-                      icon: mdi:arrow-up-bold
-                      icon_height: 48px
-                      tap_action:
-                        action: perform-action
-                        perform_action: cover.open_cover
-                        target:
-                          entity_id: cover.wohnzimmer_ture_rollladen
-                    - type: button
-                      name: Stopp
-                      icon: mdi:stop
-                      icon_height: 48px
-                      tap_action:
-                        action: perform-action
-                        perform_action: cover.stop_cover
-                        target:
-                          entity_id: cover.wohnzimmer_ture_rollladen
-                    - type: button
-                      name: Zu
-                      icon: mdi:arrow-down-bold
-                      icon_height: 48px
-                      tap_action:
-                        action: perform-action
-                        perform_action: cover.close_cover
-                        target:
-                          entity_id: cover.wohnzimmer_ture_rollladen
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                data:
+                  title: Wohnzimmer Türe Rollladen
+                  content:
+                    type: vertical-stack
+                    cards:
+                      - type: button
+                        name: Auf
+                        icon: mdi:arrow-up-bold
+                        icon_height: 48px
+                        tap_action:
+                          action: perform-action
+                          perform_action: cover.open_cover
+                          target:
+                            entity_id: cover.wohnzimmer_ture_rollladen
+                      - type: button
+                        name: Stopp
+                        icon: mdi:stop
+                        icon_height: 48px
+                        tap_action:
+                          action: perform-action
+                          perform_action: cover.stop_cover
+                          target:
+                            entity_id: cover.wohnzimmer_ture_rollladen
+                      - type: button
+                        name: Zu
+                        icon: mdi:arrow-down-bold
+                        icon_height: 48px
+                        tap_action:
+                          action: perform-action
+                          perform_action: cover.close_cover
+                          target:
+                            entity_id: cover.wohnzimmer_ture_rollladen
           - type: tile
             entity: cover.bad_rollladen
             features:
               - type: cover-open-close
             tap_action:
-              action: perform-action
-              perform_action: browser_mod.popup
-              target: {}
-              data:
-                title: Bad Rollladen
-                content:
-                  type: vertical-stack
-                  cards:
-                    - type: button
-                      name: Auf
-                      icon: mdi:arrow-up-bold
-                      icon_height: 48px
-                      tap_action:
-                        action: perform-action
-                        perform_action: cover.open_cover
-                        target:
-                          entity_id: cover.bad_rollladen
-                    - type: button
-                      name: Stopp
-                      icon: mdi:stop
-                      icon_height: 48px
-                      tap_action:
-                        action: perform-action
-                        perform_action: cover.stop_cover
-                        target:
-                          entity_id: cover.bad_rollladen
-                    - type: button
-                      name: Zu
-                      icon: mdi:arrow-down-bold
-                      icon_height: 48px
-                      tap_action:
-                        action: perform-action
-                        perform_action: cover.close_cover
-                        target:
-                          entity_id: cover.bad_rollladen
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                data:
+                  title: Bad Rollladen
+                  content:
+                    type: vertical-stack
+                    cards:
+                      - type: button
+                        name: Auf
+                        icon: mdi:arrow-up-bold
+                        icon_height: 48px
+                        tap_action:
+                          action: perform-action
+                          perform_action: cover.open_cover
+                          target:
+                            entity_id: cover.bad_rollladen
+                      - type: button
+                        name: Stopp
+                        icon: mdi:stop
+                        icon_height: 48px
+                        tap_action:
+                          action: perform-action
+                          perform_action: cover.stop_cover
+                          target:
+                            entity_id: cover.bad_rollladen
+                      - type: button
+                        name: Zu
+                        icon: mdi:arrow-down-bold
+                        icon_height: 48px
+                        tap_action:
+                          action: perform-action
+                          perform_action: cover.close_cover
+                          target:
+                            entity_id: cover.bad_rollladen
             icon_tap_action:
-              action: perform-action
-              perform_action: browser_mod.popup
-              target: {}
-              data:
-                title: Bad Rollladen
-                content:
-                  type: vertical-stack
-                  cards:
-                    - type: button
-                      name: Auf
-                      icon: mdi:arrow-up-bold
-                      icon_height: 48px
-                      tap_action:
-                        action: perform-action
-                        perform_action: cover.open_cover
-                        target:
-                          entity_id: cover.bad_rollladen
-                    - type: button
-                      name: Stopp
-                      icon: mdi:stop
-                      icon_height: 48px
-                      tap_action:
-                        action: perform-action
-                        perform_action: cover.stop_cover
-                        target:
-                          entity_id: cover.bad_rollladen
-                    - type: button
-                      name: Zu
-                      icon: mdi:arrow-down-bold
-                      icon_height: 48px
-                      tap_action:
-                        action: perform-action
-                        perform_action: cover.close_cover
-                        target:
-                          entity_id: cover.bad_rollladen
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                data:
+                  title: Bad Rollladen
+                  content:
+                    type: vertical-stack
+                    cards:
+                      - type: button
+                        name: Auf
+                        icon: mdi:arrow-up-bold
+                        icon_height: 48px
+                        tap_action:
+                          action: perform-action
+                          perform_action: cover.open_cover
+                          target:
+                            entity_id: cover.bad_rollladen
+                      - type: button
+                        name: Stopp
+                        icon: mdi:stop
+                        icon_height: 48px
+                        tap_action:
+                          action: perform-action
+                          perform_action: cover.stop_cover
+                          target:
+                            entity_id: cover.bad_rollladen
+                      - type: button
+                        name: Zu
+                        icon: mdi:arrow-down-bold
+                        icon_height: 48px
+                        tap_action:
+                          action: perform-action
+                          perform_action: cover.close_cover
+                          target:
+                            entity_id: cover.bad_rollladen
           - type: tile
             entity: cover.alle_rollladen
             features:
               - type: cover-open-close
             tap_action:
-              action: perform-action
-              perform_action: browser_mod.popup
-              target: {}
-              data:
-                title: Alle Rollläden
-                content:
-                  type: vertical-stack
-                  cards:
-                    - type: button
-                      name: Auf
-                      icon: mdi:arrow-up-bold
-                      icon_height: 48px
-                      tap_action:
-                        action: perform-action
-                        perform_action: cover.open_cover
-                        target:
-                          entity_id: cover.alle_rollladen
-                    - type: button
-                      name: Stopp
-                      icon: mdi:stop
-                      icon_height: 48px
-                      tap_action:
-                        action: perform-action
-                        perform_action: cover.stop_cover
-                        target:
-                          entity_id: cover.alle_rollladen
-                    - type: button
-                      name: Zu
-                      icon: mdi:arrow-down-bold
-                      icon_height: 48px
-                      tap_action:
-                        action: perform-action
-                        perform_action: cover.close_cover
-                        target:
-                          entity_id: cover.alle_rollladen
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                data:
+                  title: Alle Rollläden
+                  content:
+                    type: vertical-stack
+                    cards:
+                      - type: button
+                        name: Auf
+                        icon: mdi:arrow-up-bold
+                        icon_height: 48px
+                        tap_action:
+                          action: perform-action
+                          perform_action: cover.open_cover
+                          target:
+                            entity_id: cover.alle_rollladen
+                      - type: button
+                        name: Stopp
+                        icon: mdi:stop
+                        icon_height: 48px
+                        tap_action:
+                          action: perform-action
+                          perform_action: cover.stop_cover
+                          target:
+                            entity_id: cover.alle_rollladen
+                      - type: button
+                        name: Zu
+                        icon: mdi:arrow-down-bold
+                        icon_height: 48px
+                        tap_action:
+                          action: perform-action
+                          perform_action: cover.close_cover
+                          target:
+                            entity_id: cover.alle_rollladen
             icon_tap_action:
-              action: perform-action
-              perform_action: browser_mod.popup
-              target: {}
-              data:
-                title: Alle Rollläden
-                content:
-                  type: vertical-stack
-                  cards:
-                    - type: button
-                      name: Auf
-                      icon: mdi:arrow-up-bold
-                      icon_height: 48px
-                      tap_action:
-                        action: perform-action
-                        perform_action: cover.open_cover
-                        target:
-                          entity_id: cover.alle_rollladen
-                    - type: button
-                      name: Stopp
-                      icon: mdi:stop
-                      icon_height: 48px
-                      tap_action:
-                        action: perform-action
-                        perform_action: cover.stop_cover
-                        target:
-                          entity_id: cover.alle_rollladen
-                    - type: button
-                      name: Zu
-                      icon: mdi:arrow-down-bold
-                      icon_height: 48px
-                      tap_action:
-                        action: perform-action
-                        perform_action: cover.close_cover
-                        target:
-                          entity_id: cover.alle_rollladen
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                data:
+                  title: Alle Rollläden
+                  content:
+                    type: vertical-stack
+                    cards:
+                      - type: button
+                        name: Auf
+                        icon: mdi:arrow-up-bold
+                        icon_height: 48px
+                        tap_action:
+                          action: perform-action
+                          perform_action: cover.open_cover
+                          target:
+                            entity_id: cover.alle_rollladen
+                      - type: button
+                        name: Stopp
+                        icon: mdi:stop
+                        icon_height: 48px
+                        tap_action:
+                          action: perform-action
+                          perform_action: cover.stop_cover
+                          target:
+                            entity_id: cover.alle_rollladen
+                      - type: button
+                        name: Zu
+                        icon: mdi:arrow-down-bold
+                        icon_height: 48px
+                        tap_action:
+                          action: perform-action
+                          perform_action: cover.close_cover
+                          target:
+                            entity_id: cover.alle_rollladen
           - type: tile
             entity: climate.roomlivingroom_wohnzimmer_fenster_heizung
             features:
