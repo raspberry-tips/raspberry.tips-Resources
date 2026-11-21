@@ -19,9 +19,10 @@ sudo apt install python3-spidev python3-libgpiod -y
 ## Nutzung
 
 ```bash
+sudo apt install git -y   # fehlt bei Raspberry Pi OS Lite
 git clone https://github.com/raspberry-tips/raspberry.tips-Resources.git
 cd raspberry.tips-Resources/rfid-rc522
-python3 rfid_lesen.py
+python3 rfid_lesen.py   # English output: python3 read_rfid.py
 ```
 
 ## Dateien
@@ -30,6 +31,7 @@ python3 rfid_lesen.py
 |---|---|
 | `mfrc522_pi5.py` | MFRC522-Klasse für Pi 5 (spidev + gpiod, kein RPi.GPIO) |
 | `rfid_lesen.py` | UIDs von RFID-Tags auslesen |
+| `read_rfid.py` | Read RFID tag UIDs (English output, same logic as `rfid_lesen.py`) |
 
 ## Verkabelung RC522 an Raspberry Pi 5
 

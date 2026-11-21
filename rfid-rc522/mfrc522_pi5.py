@@ -57,8 +57,8 @@ class MFRC522:
         self.spi.mode = 0
 
         # RST pin via gpiod. The header GPIOs live on gpiochip0 on every
-        # model (Pi 5 included) - only old Pi 5 images (kernel before
-        # 6.6.45) had them on gpiochip4.
+        # model (Pi 5 included) - only old Pi 5 images (before
+        # autumn 2024) had them on gpiochip4.
         self._rst_open('/dev/gpiochip0')
 
         self.MFRC522_Init()
