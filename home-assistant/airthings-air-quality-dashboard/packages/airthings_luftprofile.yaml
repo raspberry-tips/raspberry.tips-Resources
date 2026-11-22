@@ -31,6 +31,10 @@ template:
       # ---------------------------------------------------------------
       - name: "Luftprofil Kopfschmerzen"
         unique_id: luftprofil_kopfschmerzen
+        # Ohne Messwerte (z. B. Airthings-Cloud nicht erreichbar) meldet
+        # der Sensor "nicht verfuegbar" statt einer falschen Bewertung.
+        availability: >-
+          {{ has_value('sensor.wohnzimmer_view_plus_kohlendioxid') and has_value('sensor.wohnzimmer_view_plus_voc_teile') and has_value('sensor.wohnzimmer_view_plus_luftfeuchtigkeit') }}
         icon: mdi:head-flash-outline
         state: >-
           {% set co2 = states('sensor.wohnzimmer_view_plus_kohlendioxid') | float(0) %}
@@ -58,6 +62,10 @@ template:
       # ---------------------------------------------------------------
       - name: "Luftprofil Schlaf"
         unique_id: luftprofil_schlaf
+        # Ohne Messwerte (z. B. Airthings-Cloud nicht erreichbar) meldet
+        # der Sensor "nicht verfuegbar" statt einer falschen Bewertung.
+        availability: >-
+          {{ has_value('sensor.wohnzimmer_view_plus_kohlendioxid') and has_value('sensor.wohnzimmer_view_plus_temperatur') and has_value('sensor.wohnzimmer_view_plus_luftfeuchtigkeit') }}
         icon: mdi:sleep
         state: >-
           {% set co2 = states('sensor.wohnzimmer_view_plus_kohlendioxid') | float(0) %}
@@ -84,6 +92,10 @@ template:
       # (Umlaute werden zu a/o/u verkuerzt)
       - name: "Luftprofil Produktivität"
         unique_id: luftprofil_produktivitaet
+        # Ohne Messwerte (z. B. Airthings-Cloud nicht erreichbar) meldet
+        # der Sensor "nicht verfuegbar" statt einer falschen Bewertung.
+        availability: >-
+          {{ has_value('sensor.wohnzimmer_view_plus_kohlendioxid') and has_value('sensor.wohnzimmer_view_plus_temperatur') and has_value('sensor.wohnzimmer_view_plus_voc_teile') }}
         icon: mdi:lightbulb-on-outline
         state: >-
           {% set co2 = states('sensor.wohnzimmer_view_plus_kohlendioxid') | float(0) %}
@@ -108,6 +120,10 @@ template:
       # ---------------------------------------------------------------
       - name: "Luftprofil Allergie"
         unique_id: luftprofil_allergie
+        # Ohne Messwerte (z. B. Airthings-Cloud nicht erreichbar) meldet
+        # der Sensor "nicht verfuegbar" statt einer falschen Bewertung.
+        availability: >-
+          {{ has_value('sensor.wohnzimmer_view_plus_pm1') and has_value('sensor.wohnzimmer_view_plus_pm25') and has_value('sensor.wohnzimmer_view_plus_luftfeuchtigkeit') }}
         icon: mdi:flower-pollen-outline
         state: >-
           {% set pm1 = states('sensor.wohnzimmer_view_plus_pm1') | float(0) %}

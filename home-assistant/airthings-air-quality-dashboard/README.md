@@ -27,6 +27,10 @@ Luftqualitäts-Sensor, es müssen nur die Entity-IDs angepasst werden.
 4. Neues Dashboard anlegen → Roh-Konfigurationseditor → Inhalt einer der beiden
    Dashboard-Dateien einfügen (Entity-IDs ebenfalls anpassen).
 
+**Ohne Messwerte:** Jeder Profil-Sensor hat eine `availability`-Zeile. Fehlen seine
+Messwerte (z. B. Airthings-Cloud nicht erreichbar), meldet er „Nicht verfügbar"
+statt „Gut", und beide Dashboards zeigen das Profil grau mit „Keine Messwerte".
+
 **Achtung Umlaute:** Home Assistant kürzt Umlaute in Entity-IDs zu a/o/u —
 aus „Luftprofil Produktivität" wird `sensor.luftprofil_produktivitat`.
 

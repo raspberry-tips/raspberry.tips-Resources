@@ -31,9 +31,10 @@ views:
                            'sensor.luftprofil_produktivitat',
                            'sensor.luftprofil_allergie'] %}
               {% set s = states(e) %}
-              {% set icon = '🟢' if s == 'Gut' else ('🟡' if s == 'Eingeschränkt' else '🔴') %}
-              **{{ icon }} {{ state_attr(e, 'friendly_name') | replace('Luftprofil ', '') }}: {{ s }}**{{ '  ' }}
-              {{ state_attr(e, 'probleme') }}
+              {% set offline = s in ['unavailable', 'unknown'] %}
+              {% set icon = '⚪' if offline else ('🟢' if s == 'Gut' else ('🟡' if s == 'Eingeschränkt' else '🔴')) %}
+              **{{ icon }} {{ state_attr(e, 'friendly_name') | replace('Luftprofil ', '') }}: {{ 'keine Messwerte' if offline else s }}**{{ '  ' }}
+              {{ 'Sensor oder Airthings-Cloud nicht erreichbar' if offline else state_attr(e, 'probleme') }}
 
               {% endfor %}
 

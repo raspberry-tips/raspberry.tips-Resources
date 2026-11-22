@@ -30,12 +30,14 @@ views:
             entity: sensor.luftprofil_kopfschmerzen
             primary: Kopfschmerzen
             secondary: >-
-              {{ states('sensor.luftprofil_kopfschmerzen') }} ·
-              {{ state_attr('sensor.luftprofil_kopfschmerzen', 'probleme') }}
+              {% set s = states('sensor.luftprofil_kopfschmerzen') %}
+              {{ 'Keine Messwerte' if s in ['unavailable', 'unknown']
+                 else s ~ ' · ' ~ state_attr('sensor.luftprofil_kopfschmerzen', 'probleme') }}
             icon: mdi:head-flash-outline
             icon_color: >-
               {% set s = states('sensor.luftprofil_kopfschmerzen') %}
-              {{ 'green' if s == 'Gut' else ('amber' if s == 'Eingeschränkt' else 'red') }}
+              {{ 'grey' if s in ['unavailable', 'unknown']
+                 else ('green' if s == 'Gut' else ('amber' if s == 'Eingeschränkt' else 'red')) }}
             multiline_secondary: true
             tap_action:
               action: more-info
@@ -44,12 +46,14 @@ views:
             entity: sensor.luftprofil_schlaf
             primary: Schlaf
             secondary: >-
-              {{ states('sensor.luftprofil_schlaf') }} ·
-              {{ state_attr('sensor.luftprofil_schlaf', 'probleme') }}
+              {% set s = states('sensor.luftprofil_schlaf') %}
+              {{ 'Keine Messwerte' if s in ['unavailable', 'unknown']
+                 else s ~ ' · ' ~ state_attr('sensor.luftprofil_schlaf', 'probleme') }}
             icon: mdi:sleep
             icon_color: >-
               {% set s = states('sensor.luftprofil_schlaf') %}
-              {{ 'green' if s == 'Gut' else ('amber' if s == 'Eingeschränkt' else 'red') }}
+              {{ 'grey' if s in ['unavailable', 'unknown']
+                 else ('green' if s == 'Gut' else ('amber' if s == 'Eingeschränkt' else 'red')) }}
             multiline_secondary: true
             tap_action:
               action: more-info
@@ -58,12 +62,14 @@ views:
             entity: sensor.luftprofil_produktivitat
             primary: Produktivität
             secondary: >-
-              {{ states('sensor.luftprofil_produktivitat') }} ·
-              {{ state_attr('sensor.luftprofil_produktivitat', 'probleme') }}
+              {% set s = states('sensor.luftprofil_produktivitat') %}
+              {{ 'Keine Messwerte' if s in ['unavailable', 'unknown']
+                 else s ~ ' · ' ~ state_attr('sensor.luftprofil_produktivitat', 'probleme') }}
             icon: mdi:lightbulb-on-outline
             icon_color: >-
               {% set s = states('sensor.luftprofil_produktivitat') %}
-              {{ 'green' if s == 'Gut' else ('amber' if s == 'Eingeschränkt' else 'red') }}
+              {{ 'grey' if s in ['unavailable', 'unknown']
+                 else ('green' if s == 'Gut' else ('amber' if s == 'Eingeschränkt' else 'red')) }}
             multiline_secondary: true
             tap_action:
               action: more-info
@@ -72,12 +78,14 @@ views:
             entity: sensor.luftprofil_allergie
             primary: Allergie & Feinstaub
             secondary: >-
-              {{ states('sensor.luftprofil_allergie') }} ·
-              {{ state_attr('sensor.luftprofil_allergie', 'probleme') }}
+              {% set s = states('sensor.luftprofil_allergie') %}
+              {{ 'Keine Messwerte' if s in ['unavailable', 'unknown']
+                 else s ~ ' · ' ~ state_attr('sensor.luftprofil_allergie', 'probleme') }}
             icon: mdi:flower-pollen-outline
             icon_color: >-
               {% set s = states('sensor.luftprofil_allergie') %}
-              {{ 'green' if s == 'Gut' else ('amber' if s == 'Eingeschränkt' else 'red') }}
+              {{ 'grey' if s in ['unavailable', 'unknown']
+                 else ('green' if s == 'Gut' else ('amber' if s == 'Eingeschränkt' else 'red')) }}
             multiline_secondary: true
             tap_action:
               action: more-info
