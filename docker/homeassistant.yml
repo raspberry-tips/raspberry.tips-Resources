@@ -1,15 +1,22 @@
 # Home Assistant Docker Compose
-# Tutorial: https://raspberry.tips/raspberrypi-tutorials/home-assistant-raspberry-pi-installieren
+# Tutorial (DE): https://raspberry.tips/raspberrypi-tutorials/home-assistant-auf-dem-raspberry-pi-installieren-komplettanleitung
+# Tutorial (EN): https://raspberry.tips/en/smart-home/home-assistant-raspberry-pi-install
+#
+# Start:  docker compose -f homeassistant.yml up -d
+# Update: docker compose -f homeassistant.yml pull && docker compose -f homeassistant.yml up -d
+# TZ: set your own time zone (tz database name), e.g. Europe/Vienna, Europe/Zurich, Europe/London
 
 services:
   homeassistant:
     container_name: homeassistant
-    image: ghcr.io/home-assistant/home-assistant:stable
+    image: "ghcr.io/home-assistant/home-assistant:stable"
     volumes:
-      - ./homeassistant/config:/config
+      - /opt/homeassistant/config:/config
       - /etc/localtime:/etc/localtime:ro
       - /run/dbus:/run/dbus:ro
     restart: unless-stopped
     stop_grace_period: 60s
     privileged: true
     network_mode: host
+    environment:
+      TZ: Europe/Berlin

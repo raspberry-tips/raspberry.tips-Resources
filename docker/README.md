@@ -8,9 +8,9 @@ Fertige Docker Compose Konfigurationen für populäre Heimserver-Dienste.
 
 | Datei | Dienst | Tutorial |
 |---|---|---|
-| `pihole.yml` | Pi-hole Werbeblocker | [→](https://raspberry.tips/raspberrypi-tutorials/pi-hole-einrichten-netzwerkweiter-werbeblocker) |
+| `pihole.yml` | Pi-hole Werbeblocker | [→](https://raspberry.tips/raspberrypi-tutorials/pi-hole-einrichten-raspberry-pi) |
 | `nextcloud.yml` | Nextcloud AIO | [→](https://raspberry.tips/server-2/nextcloud-auf-dem-raspberry-pi-installieren-eigene-cloud-einrichten) |
-| `homeassistant.yml` | Home Assistant | [→](https://raspberry.tips/raspberrypi-tutorials/home-assistant-raspberry-pi-installieren) |
+| `homeassistant.yml` | Home Assistant | [→](https://raspberry.tips/raspberrypi-tutorials/home-assistant-auf-dem-raspberry-pi-installieren-komplettanleitung) |
 | `ollama.yml` | Ollama + Open WebUI | [→](https://raspberry.tips/raspberrypi-tutorials/ollama-raspberry-pi-5) |
 
 ## Verwendung
