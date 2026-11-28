@@ -10,7 +10,7 @@ views:
         cards:
           - type: tile
             entity: switch.esszimmer_walldisplay_esszimmer_licht
-            name: Esszimmer Lich
+            name: Esszimmer Licht
             icon: mdi:ceiling-light-multiple
             vertical: false
             tap_action:
